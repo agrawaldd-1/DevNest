@@ -4,6 +4,7 @@ import cors from "cors";
 
 import { connectDB } from "./config/db.js";
 import authRoutes from "./router/authRoutes.js";
+import profileRoutes from "./router/profileRoutes.js";
 
 dotenv.config({
   path: ".env",
@@ -18,6 +19,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/profile", profileRoutes);
 
 app.get("/", (req, res) => {
   res.send("Server Running...");

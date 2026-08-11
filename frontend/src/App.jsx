@@ -4,6 +4,7 @@ import "./App.css";
 import Login from "./components/Login.jsx";
 import Register from "./components/Register.jsx";
 import Dashboard from "./components/Dashboard.jsx";
+import ProtectedRoute from "./components/ProtectedRoutes.jsx";
 
 const router = createBrowserRouter([
     {
@@ -15,9 +16,13 @@ const router = createBrowserRouter([
         element: <Register />,
     },
     {
-        path : "/dashboard",
-        element : <Dashboard/>
-    }
+        path: "/dashboard",
+        element: (
+            <ProtectedRoute>
+                <Dashboard />
+            </ProtectedRoute>
+        ),
+    },
 ]);
 
 function App() {
