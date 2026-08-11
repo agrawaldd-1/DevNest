@@ -5,6 +5,8 @@ import Login from "./components/Login.jsx";
 import Register from "./components/Register.jsx";
 import Dashboard from "./components/Dashboard.jsx";
 import ProtectedRoute from "./components/ProtectedRoutes.jsx";
+import FetchProfile from "./components/FetchProfile.jsx";
+import EditProfile from "./components/EditProfile.jsx";
 
 const router = createBrowserRouter([
     {
@@ -23,6 +25,18 @@ const router = createBrowserRouter([
             </ProtectedRoute>
         ),
     },
+    {
+        path : "/profile",
+        element:(<ProtectedRoute>
+                <FetchProfile />
+            </ProtectedRoute>)
+    },
+    {
+        path : "/profile/edit",
+        element:(<ProtectedRoute>
+                <EditProfile />
+            </ProtectedRoute>)
+    }
 ]);
 
 function App() {

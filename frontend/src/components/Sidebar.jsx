@@ -1,153 +1,172 @@
 import {
     Home,
-    User,
+    Search,
+    UserRound,
     FolderKanban,
     Clapperboard,
     MessageSquare,
-    Search,
+    Bookmark,
+    Settings,
     LogOut,
-    Code2,
 } from "lucide-react";
 
-const Sidebar = ({ user, navigate, handleLogout }) => {
+import { NavLink } from "react-router-dom";
+
+const Sidebar = ({ user, handleLogout }) => {
+    const navItems = [
+        {
+            name: "Home",
+            path: "/dashboard",
+            icon: Home,
+        },
+        {
+            name: "Search",
+            path: "/search",
+            icon: Search,
+        },
+        {
+            name: "Profile",
+            path: "/profile",
+            icon: UserRound,
+        },
+        {
+            name: "Projects",
+            path: "/projects",
+            icon: FolderKanban,
+        },
+        {
+            name: "Shorts",
+            path: "/shorts",
+            icon: Clapperboard,
+        },
+        {
+            name: "Chat",
+            path: "/chat",
+            icon: MessageSquare,
+        },
+    ];
+
+    // const secondaryItems = [
+    //     {
+    //         name: "Bookmarks",
+    //         path: "/bookmarks",
+    //         icon: Bookmark,
+    //     },
+    //     {
+    //         name: "Settings",
+    //         path: "/settings",
+    //         icon: Settings,
+    //     },
+    // ];
+
     return (
-        <aside className="fixed inset-y-0 left-0 z-50 hidden w-[245px] flex-col border-r border-slate-800/80 bg-[#0b1220] lg:flex">
+        <aside className="fixed left-0 top-0 z-40 hidden h-screen w-[245px] border-r border-slate-800 bg-[#08101f] lg:block">
 
-            <div className="border-b border-white/5 px-5 py-5">
-                <div className="flex items-center gap-3">
+            <div className="flex h-full flex-col">
 
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 shadow-lg shadow-blue-600/20">
-                        <Code2 size={21} className="text-white" />
+                <div className="flex h-[92px] items-center border-b border-slate-800 px-6">
+                    <div className="flex items-center gap-3">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-violet-600 shadow-lg shadow-violet-500/20">
+                            <span className="text-xl font-bold text-white">
+                                &lt;/&gt;
+                            </span>
+                        </div>
+
+                        <div>
+                            <h1 className="text-xl font-bold text-white">
+                                SkillSync
+                            </h1>
+
+                            <p className="text-[10px] font-semibold tracking-[0.18em] text-slate-500">
+                                DEVELOPER NETWORK
+                            </p>
+                        </div>
                     </div>
+                </div>
 
-                    <div>
-                        <h1 className="text-[17px] font-bold tracking-tight text-white">
-                            SkillSync
-                        </h1>
+                <div className="px-4 pt-8">
 
-                        <p className="text-[9px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                            Developer Network
-                        </p>
+                    <p className="mb-4 px-4 text-[11px] font-semibold tracking-[0.2em] text-slate-600">
+                        WORKSPACE
+                    </p>
+
+                    <nav className="space-y-2">
+
+                        {navItems.map((item) => {
+                            const Icon = item.icon;
+
+                            return (
+                                <NavLink
+                                    key={item.path}
+                                    to={item.path}
+                                    className={({ isActive }) =>
+                                        `group flex items-center gap-4 rounded-xl px-4 py-3 text-sm font-medium transition ${
+                                            isActive
+                                                ? "bg-blue-500/10 text-blue-400"
+                                                : "text-slate-400 hover:bg-slate-800/60 hover:text-white"
+                                        }`
+                                    }
+                                >
+                                    {({ isActive }) => (
+                                        <>
+                                            <Icon
+                                                size={21}
+                                                strokeWidth={isActive ? 2.2 : 1.8}
+                                                className={
+                                                    isActive
+                                                        ? "text-blue-400"
+                                                        : "text-slate-500 group-hover:text-slate-300"
+                                                }
+                                            />
+
+                                            <span>{item.name}</span>
+
+                                            {isActive && item.name === "Home" && (
+                                                <span className="ml-auto h-2 w-2 rounded-full bg-blue-500" />
+                                            )}
+                                        </>
+                                    )}
+                                </NavLink>
+                            );
+                        })}
+
+                    </nav>
+                </div>
+
+                
+
+                <div className="mt-auto border-t border-slate-800 p-4">
+
+                    <div className="flex items-center gap-3 rounded-xl bg-slate-900/70 p-3">
+
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 font-bold text-white">
+                            {user?.username?.charAt(0)?.toUpperCase() || "D"}
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm font-semibold text-white">
+                                {user?.username || "User"}
+                            </p>
+
+                            <p className="truncate text-xs text-slate-500">
+                                {user?.email || ""}
+                            </p>
+                        </div>
+
+                        <button
+                            onClick={handleLogout}
+                            className="text-slate-500 transition hover:text-white"
+                            title="Logout"
+                        >
+                            <LogOut size={19} />
+                        </button>
+
                     </div>
 
                 </div>
-            </div>
-
-            <div className="flex-1 px-3 py-6">
-
-                <p className="mb-3 px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-600">
-                    Workspace
-                </p>
-
-                <nav className="space-y-1">
-
-                    <SidebarItem
-                        icon={<Home size={19} />}
-                        label="Home"
-                        active
-                        onClick={() => navigate("/dashboard")}
-                    />
-
-                    <SidebarItem
-                        icon={<Search size={19} />}
-                        label="Search"
-                        onClick={() => navigate("/search")}
-                    />
-
-                    <SidebarItem
-                        icon={<User size={19} />}
-                        label="Profile"
-                        onClick={() => navigate("/profile")}
-                    />
-
-                    <SidebarItem
-                        icon={<FolderKanban size={19} />}
-                        label="Projects"
-                        onClick={() => navigate("/projects")}
-                    />
-
-                    <SidebarItem
-                        icon={<Clapperboard size={19} />}
-                        label="Shorts"
-                        onClick={() => navigate("/shorts")}
-                    />
-
-                    <SidebarItem
-                        icon={<MessageSquare size={19} />}
-                        label="Chat"
-                        onClick={() => navigate("/chat")}
-                    />
-
-                </nav>
-            </div>
-
-            <div className="border-t border-white/5 p-3">
-
-                <div className="flex items-center gap-3 rounded-xl bg-white/[0.035] p-3">
-
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 text-sm font-bold text-white">
-                        {user?.username?.charAt(0)?.toUpperCase() || "U"}
-                    </div>
-
-                    <div className="min-w-0 flex-1">
-
-                        <p className="truncate text-sm font-semibold text-white">
-                            {user?.username}
-                        </p>
-
-                        <p className="truncate text-[11px] text-slate-500">
-                            {user?.email}
-                        </p>
-
-                    </div>
-
-                    <button
-                        onClick={handleLogout}
-                        className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-500/10 hover:text-red-400"
-                        title="Logout"
-                    >
-                        <LogOut size={17} />
-                    </button>
-
-                </div>
 
             </div>
-
         </aside>
-    );
-};
-
-const SidebarItem = ({
-    icon,
-    label,
-    active = false,
-    onClick,
-}) => {
-    return (
-        <button
-            onClick={onClick}
-            className={`group flex w-full items-center gap-3 rounded-xl px-3.5 py-3 text-left text-sm transition ${
-                active
-                    ? "bg-blue-500/10 font-semibold text-blue-400"
-                    : "text-slate-400 hover:bg-white/[0.04] hover:text-white"
-            }`}
-        >
-            <span
-                className={`transition ${
-                    active
-                        ? "text-blue-400"
-                        : "text-slate-500 group-hover:text-slate-300"
-                }`}
-            >
-                {icon}
-            </span>
-
-            <span>{label}</span>
-
-            {active && (
-                <span className="ml-auto h-1.5 w-1.5 rounded-full bg-blue-500" />
-            )}
-        </button>
     );
 };
 
