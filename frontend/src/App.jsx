@@ -7,6 +7,7 @@ import Dashboard from "./components/Dashboard.jsx";
 import ProtectedRoute from "./components/ProtectedRoutes.jsx";
 import FetchProfile from "./components/FetchProfile.jsx";
 import EditProfile from "./components/EditProfile.jsx";
+import CreatePost from "./components/CreatePost.jsx";
 
 const router = createBrowserRouter([
     {
@@ -36,6 +37,12 @@ const router = createBrowserRouter([
         element:(<ProtectedRoute>
                 <EditProfile />
             </ProtectedRoute>)
+    },
+    {
+        path : "create-post",
+        element : (
+            <ProtectedRoute><CreatePost/></ProtectedRoute>
+        )
     }
 ]);
 
