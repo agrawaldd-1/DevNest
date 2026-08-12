@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Code2 } from "lucide-react";
 
 import { getProfile } from "../services/authServices.js";
+import { getAllPosts } from "../services/postService.js";
 
 import Sidebar from "./Sidebar.jsx";
 import Navbar from "./Navbar.jsx";
@@ -13,7 +14,16 @@ const Dashboard = () => {
     const navigate = useNavigate();
 
     const [user, setUser] = useState(null);
+    const [posts, setPosts] = useState([]);
+
     const [loading, setLoading] = useState(true);
+    const [postsLoading, setPostsLoading] = useState(true);
+
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
+
+    const observerRef = useRef(null);
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -42,6 +52,84 @@ const Dashboard = () => {
 
         fetchProfile();
     }, [navigate]);
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                setPostsLoading(true);
+
+                const response = await getAllPosts(1);
+
+                if (response.success) {
+                    setPosts(response.posts);
+                    setHasMore(response.hasMore);
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setPostsLoading(false);
+            }
+        };
+
+        fetchPosts();
+    }, []);
+
+    useEffect(() => {
+        if (page === 1 || !hasMore) {
+            return;
+        }
+
+        const fetchMorePosts = async () => {
+            try {
+                setLoadingMore(true);
+
+                const response = await getAllPosts(page);
+
+                if (response.success) {
+                    setPosts((previousPosts) => [
+                        ...previousPosts,
+                        ...response.posts,
+                    ]);
+
+                    setHasMore(response.hasMore);
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoadingMore(false);
+            }
+        };
+
+        fetchMorePosts();
+    }, [page, hasMore]);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (
+                    entries[0].isIntersecting &&
+                    hasMore &&
+                    !loadingMore &&
+                    !postsLoading
+                ) {
+                    setPage((previousPage) => previousPage + 1);
+                }
+            },
+            {
+                threshold: 0.1,
+            }
+        );
+
+        if (observerRef.current) {
+            observer.observe(observerRef.current);
+        }
+
+        return () => {
+            if (observerRef.current) {
+                observer.unobserve(observerRef.current);
+            }
+        };
+    }, [hasMore, loadingMore, postsLoading]);
 
     const handleLogout = () => {
         localStorage.removeItem("token");
@@ -84,56 +172,51 @@ const Dashboard = () => {
                         handleLogout={handleLogout}
                     />
 
-                    <div className="mx-auto max-w-[1080px] px-5 pb-28 pt-8 sm:px-7 lg:pb-10">
-
-                        <div className="mb-7 flex items-end justify-between">
-
-                            <div>
-                                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-blue-600">
-                                    Community
-                                </p>
-
-                                <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900">
-                                    Latest from developers
-                                </h1>
-                            </div>
-
-                            <button
-                                onClick={() => navigate("/search")}
-                                className="hidden text-sm font-semibold text-slate-500 transition hover:text-blue-600 sm:block"
-                            >
-                                Explore feed
-                            </button>
-
-                        </div>
+                    <div className="mx-auto px-5 pb-28 pt-8 sm:px-7 lg:pb-10">
 
                         <section>
 
-                            <PostCard
-                                username="SkillSync Community"
-                                time="Just now"
-                                title="Welcome to SkillSync 🚀"
-                                description="Build your skills, showcase your projects and connect with developers who share your interests."
-                                avatar="S"
-                                verified
-                            />
+                            {postsLoading ? (
+                                <div className="py-10 text-center text-sm text-slate-400">
+                                    Loading posts...
+                                </div>
+                            ) : posts.length === 0 ? (
+                                <div className="py-10 text-center">
+                                    <p className="text-sm font-medium text-slate-500">
+                                        No posts found.
+                                    </p>
 
-                            <PostCard
-                                username="Developer Community"
-                                time="2 hours ago"
-                                title="Share what you're building"
-                                description="Your projects tell your story. Let the community discover what you can build, learn from your journey and connect with developers working on similar ideas."
-                                avatar="D"
-                            />
+                                    <p className="mt-1 text-xs text-slate-400">
+                                        Be the first one to create a post.
+                                    </p>
+                                </div>
+                            ) : (
+                                <>
+                                    {posts.map((post) => (
+                                        <PostCard
+                                            key={post._id}
+                                            post={post}
+                                        />
+                                    ))}
 
-                            <PostCard
-                                username="SkillSync"
-                                time="Yesterday"
-                                title="Build Skills. Build Network. Build Career."
-                                description="SkillSync brings developers together around skills, projects and meaningful connections. Start building your developer network today."
-                                avatar="S"
-                                verified
-                            />
+                                    <div
+                                        ref={observerRef}
+                                        className="flex h-20 items-center justify-center"
+                                    >
+                                        {loadingMore && (
+                                            <p className="text-sm text-slate-400">
+                                                Loading more posts...
+                                            </p>
+                                        )}
+
+                                        {!hasMore && (
+                                            <p className="text-sm text-slate-400">
+                                                You're all caught up.
+                                            </p>
+                                        )}
+                                    </div>
+                                </>
+                            )}
 
                         </section>
 
