@@ -1,6 +1,8 @@
 import { User, availableSkills } from "../models/user.js";
+import { Post } from "../models/post.js";
 import cloudinary from "../config/cloudinary.js";
 import streamifier from "streamifier";
+import { Project } from "../models/project.js";
 
 export const fetchProfile = async (req, res) => {
     try {
@@ -22,10 +24,34 @@ export const fetchProfile = async (req, res) => {
             });
         }
 
+        const totalPosts = await Post.countDocuments({
+            userId: id,
+        });
+
+        const posts = await Post.find({
+            userId: id,
+        })
+            .populate("userId", "username image")
+            .sort({ createdAt: -1 });
+
+        const totalProjects = await Project.countDocuments({
+            userId: id,
+        });
+
+        const projects = await Project.find({
+            userId: id,
+        })
+            .populate("userId", "username image")
+            .sort({ createdAt: -1 });
+
         return res.status(200).json({
             success: true,
             message: "Profile fetched successfully",
             user,
+            totalPosts,
+            posts,
+            totalProjects,
+            projects,
         });
     } catch (error) {
         console.log(error);
