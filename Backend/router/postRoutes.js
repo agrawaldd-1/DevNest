@@ -1,5 +1,5 @@
 import express from "express";
-import { createPost, editPost , deletePost,getAllPosts } from "../controllers/postController.js";
+import { createPost, editPost , deletePost,getAllPosts,viewPost } from "../controllers/postController.js";
 import { protect } from "../middleware/authMiddleware.js";
 import upload from "../middleware/uploadMiddleware.js";
 
@@ -11,5 +11,6 @@ router.put("/edit/:postId", protect, editPost);
 router.delete("/delete/:postId", protect, deletePost);
 
 router.get("/", protect, getAllPosts);
+router.get("/:postId", protect, viewPost);
 
 export default router;
