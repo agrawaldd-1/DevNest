@@ -8,16 +8,22 @@ import ProtectedRoute from "./components/ProtectedRoutes.jsx";
 import FetchProfile from "./components/FetchProfile.jsx";
 import EditProfile from "./components/EditProfile.jsx";
 import CreatePost from "./components/CreatePost.jsx";
+import ViewPost from "./components/ViewPost.jsx";
+import CreateProject from "./components/CreateProject.jsx";
+import Projects from "./components/Projects.jsx";
+import ViewProject from "./components/ViewProject.jsx";
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <Login />,
     },
+
     {
         path: "/register",
         element: <Register />,
     },
+
     {
         path: "/dashboard",
         element: (
@@ -26,24 +32,65 @@ const router = createBrowserRouter([
             </ProtectedRoute>
         ),
     },
+
     {
-        path : "/profile",
-        element:(<ProtectedRoute>
+        path: "/profile",
+        element: (
+            <ProtectedRoute>
                 <FetchProfile />
-            </ProtectedRoute>)
+            </ProtectedRoute>
+        ),
     },
+
     {
-        path : "/profile/edit",
-        element:(<ProtectedRoute>
+        path: "/profile/edit",
+        element: (
+            <ProtectedRoute>
                 <EditProfile />
-            </ProtectedRoute>)
+            </ProtectedRoute>
+        ),
     },
+
     {
-        path : "create-post",
-        element : (
-            <ProtectedRoute><CreatePost/></ProtectedRoute>
-        )
-    }
+        path: "/create-post",
+        element: (
+            <ProtectedRoute>
+                <CreatePost />
+            </ProtectedRoute>
+        ),
+    },
+
+    {
+        path: "/posts/:postId",
+        element: <ViewPost/>
+    },
+
+    {
+        path: "/projects",
+        element: (
+            <ProtectedRoute>
+                <Projects />
+            </ProtectedRoute>
+        ),
+    },
+
+    {
+        path: "/projects/create",
+        element: (
+            <ProtectedRoute>
+                <CreateProject />
+            </ProtectedRoute>
+        ),
+    },
+
+    {
+        path: "/projects/:projectId",
+        element: (
+            <ProtectedRoute>
+                <ViewProject />
+            </ProtectedRoute>
+        ),
+    },
 ]);
 
 function App() {
