@@ -229,3 +229,39 @@ export const getAllPosts = async (req, res) => {
     });
   }
 };
+
+export const viewPost = async (req, res) => {
+    try {
+        const { postId } = req.params;
+
+        if (!postId) {
+            return res.status(400).json({
+                success: false,
+                message: "Post Id not found",
+            });
+        }
+
+        const post = await Post.findById(postId)
+            .populate("userId", "username image");
+
+        if (!post) {
+            return res.status(404).json({
+                success: false,
+                message: "Post not found",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Post fetched successfully",
+            post,
+        });
+    } catch (error) {
+        console.log(error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+};
