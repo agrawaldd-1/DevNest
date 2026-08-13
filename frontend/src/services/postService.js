@@ -16,3 +16,15 @@ export const getAllPosts = async (page = 1) => {
 
     return response.data;
 };
+
+export const viewPost = async (postId) => {
+    const token = localStorage.getItem("token");
+
+    const response = await api.get(`/posts/${postId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    return response.data;
+};
