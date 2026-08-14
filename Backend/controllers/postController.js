@@ -1,5 +1,7 @@
 import { User } from "../models/user.js";
 import { Post } from "../models/post.js";
+import { Like } from "../models/likes.js";
+import { Comment } from "../models/comments.js";
 import cloudinary from "../config/cloudinary.js";
 import streamifier from "streamifier";
 
@@ -148,6 +150,7 @@ export const deletePost = async (req, res) => {
     try {
         const { id } = req.user;
         const { postId } = req.params;
+
         if (!id) {
             return res.status(400).json({
                 success: false,
@@ -163,76 +166,112 @@ export const deletePost = async (req, res) => {
                 message: "User not found",
             });
         }
+
         const post = await Post.findById(postId);
+
         if (!post) {
             return res.status(404).json({
                 success: false,
                 message: "Post not found",
             });
         }
+
         if (post.userId.toString() !== id.toString()) {
             return res.status(403).json({
                 success: false,
                 message: "You are not authorized to delete this post",
             });
         }
+
         if (post.imagePublicId) {
             await cloudinary.uploader.destroy(post.imagePublicId);
         }
+
         await Post.findByIdAndDelete(postId);
+
         return res.status(200).json({
             success: true,
             message: "Post deleted successfully",
         });
-     }
-
-    catch (error) {
+    } catch (error) {
         return res.status(500).json({
             success: false,
             message: "Failed to delete post",
             error: error.message,
         });
     }
-}
+};
 
 export const getAllPosts = async (req, res) => {
-  try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = 6;
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = 6;
+        const skip = (page - 1) * limit;
 
-    const skip = (page - 1) * limit;
+        const userId = req.user.id;
 
-    const totalPosts = await Post.countDocuments();
+        const totalPosts = await Post.countDocuments();
 
-    const posts = await Post.find()
-      .populate("userId", "username image")
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
+        const posts = await Post.find()
+            .populate("userId", "username image")
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
 
-    const totalPages = Math.ceil(totalPosts / limit);
+        const postsWithEngagement = await Promise.all(
+            posts.map(async (post) => {
+                const likeCount = await Like.countDocuments({
+                    target: post._id,
+                    targetModel: "Post",
+                });
 
-    return res.status(200).json({
-      success: true,
-      count: posts.length,
-      posts,
-      currentPage: page,
-      totalPages,
-      hasMore: page < totalPages,
-    });
-  } catch (error) {
-    console.log(error);
+                const commentCount =
+                    await Comment.countDocuments({
+                        target: post._id,
+                        targetModel: "Post",
+                    });
 
-    return res.status(500).json({
-      success: false,
-      message: "Internal Server Error.",
-    });
-  }
+                const existingLike = await Like.findOne({
+                    user: userId,
+                    target: post._id,
+                    targetModel: "Post",
+                });
+
+                return {
+                    ...post.toObject(),
+                    likeCount,
+                    commentCount,
+                    isLiked: Boolean(existingLike),
+                };
+            })
+        );
+
+        const totalPages = Math.ceil(
+            totalPosts / limit
+        );
+
+        return res.status(200).json({
+            success: true,
+            count: postsWithEngagement.length,
+            posts: postsWithEngagement,
+            currentPage: page,
+            totalPages,
+            hasMore: page < totalPages,
+        });
+    } catch (error) {
+        console.log(error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error.",
+        });
+    }
 };
 
 export const viewPost = async (req, res) => {
     try {
         const { postId } = req.params;
+        const userId = req.user?.id;
 
         if (!postId) {
             return res.status(400).json({
@@ -251,10 +290,39 @@ export const viewPost = async (req, res) => {
             });
         }
 
+        const likeCount = await Like.countDocuments({
+            target: postId,
+            targetModel: "Post",
+        });
+
+        const commentCount = await Comment.countDocuments({
+            target: postId,
+            targetModel: "Post",
+        });
+
+        let isLiked = false;
+
+        if (userId) {
+            const existingLike = await Like.findOne({
+                user: userId,
+                target: postId,
+                targetModel: "Post",
+            });
+
+            isLiked = Boolean(existingLike);
+        }
+
+        const postData = {
+            ...post.toObject(),
+            likeCount,
+            commentCount,
+            isLiked,
+        };
+
         return res.status(200).json({
             success: true,
             message: "Post fetched successfully",
-            post,
+            post: postData,
         });
     } catch (error) {
         console.log(error);

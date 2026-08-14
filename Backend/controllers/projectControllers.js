@@ -1,5 +1,7 @@
 import { User } from "../models/user.js";
 import { Project } from "../models/project.js";
+import { Like } from "../models/likes.js";
+import { Comment } from "../models/comments.js";
 import cloudinary from "../config/cloudinary.js";
 import streamifier from "streamifier";
 
@@ -246,6 +248,7 @@ export const createProject = async (req, res) => {
         });
     }
 };
+
 export const editProject = async (req, res) => {
     try {
         const { id } = req.user;
@@ -427,10 +430,12 @@ export const getAllProjects = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = 6;
-
         const skip = (page - 1) * limit;
 
-        const totalProjects = await Project.countDocuments();
+        const userId = req.user.id;
+
+        const totalProjects =
+            await Project.countDocuments();
 
         const projects = await Project.find()
             .populate("userId", "username image")
@@ -438,12 +443,47 @@ export const getAllProjects = async (req, res) => {
             .skip(skip)
             .limit(limit);
 
-        const totalPages = Math.ceil(totalProjects / limit);
+        const projectsWithEngagement =
+            await Promise.all(
+                projects.map(async (project) => {
+                    const likeCount =
+                        await Like.countDocuments({
+                            target: project._id,
+                            targetModel: "Project",
+                        });
+
+                    const commentCount =
+                        await Comment.countDocuments({
+                            target: project._id,
+                            targetModel: "Project",
+                        });
+
+                    const existingLike =
+                        await Like.findOne({
+                            user: userId,
+                            target: project._id,
+                            targetModel: "Project",
+                        });
+
+                    return {
+                        ...project.toObject(),
+                        likeCount,
+                        commentCount,
+                        isLiked: Boolean(
+                            existingLike
+                        ),
+                    };
+                })
+            );
+
+        const totalPages = Math.ceil(
+            totalProjects / limit
+        );
 
         return res.status(200).json({
             success: true,
-            count: projects.length,
-            projects,
+            count: projectsWithEngagement.length,
+            projects: projectsWithEngagement,
             currentPage: page,
             totalPages,
             hasMore: page < totalPages,
@@ -461,6 +501,7 @@ export const getAllProjects = async (req, res) => {
 export const viewProject = async (req, res) => {
     try {
         const { projectId } = req.params;
+        const userId = req.user?.id;
 
         if (!projectId) {
             return res.status(400).json({
@@ -479,10 +520,41 @@ export const viewProject = async (req, res) => {
             });
         }
 
+        const likeCount = await Like.countDocuments({
+            target: projectId,
+            targetModel: "Project",
+        });
+
+        const commentCount =
+            await Comment.countDocuments({
+                target: projectId,
+                targetModel: "Project",
+            });
+
+        let isLiked = false;
+
+        if (userId) {
+            const existingLike =
+                await Like.findOne({
+                    user: userId,
+                    target: projectId,
+                    targetModel: "Project",
+                });
+
+            isLiked = Boolean(existingLike);
+        }
+
+        const projectData = {
+            ...project.toObject(),
+            likeCount,
+            commentCount,
+            isLiked,
+        };
+
         return res.status(200).json({
             success: true,
             message: "Project fetched successfully",
-            project,
+            project: projectData,
         });
     } catch (error) {
         console.log(error);

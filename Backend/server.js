@@ -7,6 +7,8 @@ import authRoutes from "./router/authRoutes.js";
 import profileRoutes from "./router/profileRoutes.js";
 import authPosts from "./router/postRoutes.js"
 import projectRoutes from "./router/projectRoutes.js";
+import likeRoutes from "./router/likeRoutes.js";
+import commentRoutes from "./router/commentRoutes.js";
 
 dotenv.config({
   path: ".env",
@@ -24,6 +26,10 @@ app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/posts",authPosts);
 app.use("/api/projects", projectRoutes);
+app.use("/api/engagement",likeRoutes);
+
+app.use("/api/engagement",commentRoutes);
+
 
 app.get("/", (req, res) => {
   res.send("Server Running...");

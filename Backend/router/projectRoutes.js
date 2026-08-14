@@ -1,4 +1,5 @@
 import express from "express";
+
 import {
     createProject,
     editProject,
@@ -7,8 +8,8 @@ import {
     viewProject,
     getUserProjects,
 } from "../controllers/projectControllers.js";
+
 import { protect } from "../middleware/authMiddleware.js";
-import upload from "../middleware/uploadMiddleware.js";
 import uploadProject from "../middleware/uploadProjectMiddleware.js";
 
 const router = express.Router();
@@ -43,6 +44,7 @@ router.delete(
 
 router.get(
     "/",
+    protect,
     getAllProjects
 );
 
@@ -53,6 +55,7 @@ router.get(
 
 router.get(
     "/:projectId",
+    protect,
     viewProject
 );
 

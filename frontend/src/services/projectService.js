@@ -18,8 +18,15 @@ export const getAllProjects = async (page = 1) => {
 };
 
 export const viewProject = async (projectId) => {
+    const token = localStorage.getItem("token");
+
     const response = await api.get(
-        `/projects/${projectId}`
+        `/projects/${projectId}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
     );
 
     return response.data;
