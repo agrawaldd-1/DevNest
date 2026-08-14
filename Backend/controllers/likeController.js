@@ -1,5 +1,6 @@
 import { Post } from "../models/post.js";
 import { Project } from "../models/project.js";
+import { Short } from "../models/shorts.js";
 import { Like } from "../models/likes.js";
 
 export const toggleLike = async (req, res) => {
@@ -14,33 +15,43 @@ export const toggleLike = async (req, res) => {
             });
         }
 
-        if (!["post", "project"].includes(targetType)) {
+        if (
+            !["post", "project", "short"].includes(
+                targetType
+            )
+        ) {
             return res.status(400).json({
                 success: false,
                 message: "Invalid target type",
             });
         }
 
-        const Model =
-            targetType === "post"
-                ? Post
-                : Project;
+        let Model;
+        let targetModel;
+        let targetName;
 
-        const targetModel =
-            targetType === "post"
-                ? "Post"
-                : "Project";
+        if (targetType === "post") {
+            Model = Post;
+            targetModel = "Post";
+            targetName = "Post";
+        } else if (targetType === "project") {
+            Model = Project;
+            targetModel = "Project";
+            targetName = "Project";
+        } else {
+            Model = Short;
+            targetModel = "Short";
+            targetName = "Short";
+        }
 
-        const target = await Model.findById(targetId);
+        const target = await Model.findById(
+            targetId
+        );
 
         if (!target) {
             return res.status(404).json({
                 success: false,
-                message: `${
-                    targetType === "post"
-                        ? "Post"
-                        : "Project"
-                } not found`,
+                message: `${targetName} not found`,
             });
         }
 
@@ -68,10 +79,11 @@ export const toggleLike = async (req, res) => {
             liked = true;
         }
 
-        const likeCount = await Like.countDocuments({
-            target: targetId,
-            targetModel,
-        });
+        const likeCount =
+            await Like.countDocuments({
+                target: targetId,
+                targetModel,
+            });
 
         return res.status(200).json({
             success: true,

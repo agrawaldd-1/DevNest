@@ -3,6 +3,7 @@ import { Post } from "../models/post.js";
 import cloudinary from "../config/cloudinary.js";
 import streamifier from "streamifier";
 import { Project } from "../models/project.js";
+import { Short } from "../models/shorts.js";
 
 export const fetchProfile = async (req, res) => {
     try {
@@ -15,7 +16,8 @@ export const fetchProfile = async (req, res) => {
             });
         }
 
-        const user = await User.findById(id).select("-password");
+        const user = await User.findById(id)
+            .select("-password");
 
         if (!user) {
             return res.status(404).json({
@@ -24,34 +26,67 @@ export const fetchProfile = async (req, res) => {
             });
         }
 
-        const totalPosts = await Post.countDocuments({
-            userId: id,
-        });
+        const totalPosts =
+            await Post.countDocuments({
+                userId: id,
+            });
 
         const posts = await Post.find({
             userId: id,
         })
-            .populate("userId", "username image")
-            .sort({ createdAt: -1 });
+            .populate(
+                "userId",
+                "username image"
+            )
+            .sort({
+                createdAt: -1,
+            });
 
-        const totalProjects = await Project.countDocuments({
-            userId: id,
-        });
+        const totalProjects =
+            await Project.countDocuments({
+                userId: id,
+            });
 
         const projects = await Project.find({
             userId: id,
         })
-            .populate("userId", "username image")
-            .sort({ createdAt: -1 });
+            .populate(
+                "userId",
+                "username image"
+            )
+            .sort({
+                createdAt: -1,
+            });
+
+        const totalShorts =
+            await Short.countDocuments({
+                userId: id,
+            });
+
+        const shorts = await Short.find({
+            userId: id,
+        })
+            .populate(
+                "userId",
+                "username image"
+            )
+            .sort({
+                createdAt: -1,
+            });
 
         return res.status(200).json({
             success: true,
             message: "Profile fetched successfully",
             user,
+
             totalPosts,
             posts,
+
             totalProjects,
             projects,
+
+            totalShorts,
+            shorts,
         });
     } catch (error) {
         console.log(error);
@@ -62,7 +97,6 @@ export const fetchProfile = async (req, res) => {
         });
     }
 };
-
 export const editProfile = async (req, res) => {
     try {
         const { id } = req.user;

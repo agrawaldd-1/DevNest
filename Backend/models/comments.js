@@ -17,7 +17,7 @@ const commentSchema = new mongoose.Schema(
         targetModel: {
             type: String,
             required: true,
-            enum: ["Post", "Project"],
+            enum: ["Post", "Project", "Short"],
         },
 
         content: {
@@ -31,4 +31,7 @@ const commentSchema = new mongoose.Schema(
     }
 );
 
-export const Comment = mongoose.model("Comment",commentSchema);
+export const Comment = mongoose.model(
+    "Comment",
+    commentSchema
+);

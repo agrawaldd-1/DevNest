@@ -1,5 +1,6 @@
 import { Post } from "../models/post.js";
 import { Project } from "../models/project.js";
+import { Short } from "../models/shorts.js";
 import { Comment } from "../models/comments.js";
 
 export const addComment = async (req, res) => {
@@ -22,33 +23,43 @@ export const addComment = async (req, res) => {
             });
         }
 
-        if (!["post", "project"].includes(targetType)) {
+        if (
+            !["post", "project", "short"].includes(
+                targetType
+            )
+        ) {
             return res.status(400).json({
                 success: false,
                 message: "Invalid target type",
             });
         }
 
-        const Model =
-            targetType === "post"
-                ? Post
-                : Project;
+        let Model;
+        let targetModel;
+        let targetName;
 
-        const targetModel =
-            targetType === "post"
-                ? "Post"
-                : "Project";
+        if (targetType === "post") {
+            Model = Post;
+            targetModel = "Post";
+            targetName = "Post";
+        } else if (targetType === "project") {
+            Model = Project;
+            targetModel = "Project";
+            targetName = "Project";
+        } else {
+            Model = Short;
+            targetModel = "Short";
+            targetName = "Short";
+        }
 
-        const target = await Model.findById(targetId);
+        const target = await Model.findById(
+            targetId
+        );
 
         if (!target) {
             return res.status(404).json({
                 success: false,
-                message: `${
-                    targetType === "post"
-                        ? "Post"
-                        : "Project"
-                } not found`,
+                message: `${targetName} not found`,
             });
         }
 
@@ -89,17 +100,26 @@ export const getComments = async (req, res) => {
         const { targetId, targetType } =
             req.params;
 
-        if (!["post", "project"].includes(targetType)) {
+        if (
+            !["post", "project", "short"].includes(
+                targetType
+            )
+        ) {
             return res.status(400).json({
                 success: false,
                 message: "Invalid target type",
             });
         }
 
-        const targetModel =
-            targetType === "post"
-                ? "Post"
-                : "Project";
+        let targetModel;
+
+        if (targetType === "post") {
+            targetModel = "Post";
+        } else if (targetType === "project") {
+            targetModel = "Project";
+        } else {
+            targetModel = "Short";
+        }
 
         const comments = await Comment.find({
             target: targetId,

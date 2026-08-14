@@ -17,7 +17,7 @@ const likeSchema = new mongoose.Schema(
         targetModel: {
             type: String,
             required: true,
-            enum: ["Post", "Project"],
+            enum: ["Post", "Project", "Short"],
         },
     },
     {
@@ -36,4 +36,7 @@ likeSchema.index(
     }
 );
 
-export const Like = mongoose.model("Like", likeSchema);
+export const Like = mongoose.model(
+    "Like",
+    likeSchema
+);
