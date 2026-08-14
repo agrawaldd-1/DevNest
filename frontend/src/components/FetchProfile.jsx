@@ -13,11 +13,14 @@ const FetchProfile = () => {
     const navigate = useNavigate();
 
     const [profile, setProfile] = useState(null);
+
     const [posts, setPosts] = useState([]);
     const [projects, setProjects] = useState([]);
+    const [shorts, setShorts] = useState([]);
 
     const [totalPosts, setTotalPosts] = useState(0);
     const [totalProjects, setTotalProjects] = useState(0);
+    const [totalShorts, setTotalShorts] = useState(0);
 
     const [activeTab, setActiveTab] = useState("posts");
 
@@ -29,7 +32,10 @@ const FetchProfile = () => {
             const token = localStorage.getItem("token");
 
             if (!token) {
-                navigate("/", { replace: true });
+                navigate("/", {
+                    replace: true,
+                });
+
                 return;
             }
 
@@ -44,12 +50,15 @@ const FetchProfile = () => {
                         data.message ||
                             "Failed to fetch profile"
                     );
+
                     return;
                 }
 
                 setProfile(data.user);
+
                 setPosts(data.posts || []);
                 setProjects(data.projects || []);
+                setShorts(data.shorts || []);
 
                 setTotalPosts(
                     data.totalPosts || 0
@@ -58,13 +67,20 @@ const FetchProfile = () => {
                 setTotalProjects(
                     data.totalProjects || 0
                 );
+
+                setTotalShorts(
+                    data.totalShorts || 0
+                );
             } catch (error) {
                 console.error(error);
 
                 if (
-                    error.response?.status === 401
+                    error.response?.status ===
+                    401
                 ) {
-                    localStorage.removeItem("token");
+                    localStorage.removeItem(
+                        "token"
+                    );
 
                     navigate("/", {
                         replace: true,
@@ -74,7 +90,8 @@ const FetchProfile = () => {
                 }
 
                 setError(
-                    error.response?.data?.message ||
+                    error.response?.data
+                        ?.message ||
                         "Something went wrong while fetching profile"
                 );
             } finally {
@@ -97,8 +114,14 @@ const FetchProfile = () => {
         navigate(`/posts/${postId}`);
     };
 
-    const handleProjectClick = (projectId) => {
+    const handleProjectClick = (
+        projectId
+    ) => {
         navigate(`/projects/${projectId}`);
+    };
+
+    const handleShortClick = (shortId) => {
+        navigate(`/shorts/${shortId}`);
     };
 
     const handleTabChange = (tab) => {
@@ -113,15 +136,19 @@ const FetchProfile = () => {
                     <Sidebar
                         user={null}
                         navigate={navigate}
-                        handleLogout={handleLogout}
+                        handleLogout={
+                            handleLogout
+                        }
                     />
 
                     <main className="w-full lg:ml-[245px]">
 
-                        <Navbar
+                        {/* <Navbar
                             navigate={navigate}
-                            handleLogout={handleLogout}
-                        />
+                            handleLogout={
+                                handleLogout
+                            }
+                        /> */}
 
                         <div className="flex min-h-[calc(100vh-72px)] items-center justify-center px-5 pb-24 lg:pb-10">
 
@@ -139,7 +166,9 @@ const FetchProfile = () => {
 
                     </main>
 
-                    <MobileNav navigate={navigate} />
+                    <MobileNav
+                        navigate={navigate}
+                    />
 
                 </div>
             </div>
@@ -155,15 +184,19 @@ const FetchProfile = () => {
                     <Sidebar
                         user={null}
                         navigate={navigate}
-                        handleLogout={handleLogout}
+                        handleLogout={
+                            handleLogout
+                        }
                     />
 
                     <main className="w-full lg:ml-[245px]">
 
-                        <Navbar
+                        {/* <Navbar
                             navigate={navigate}
-                            handleLogout={handleLogout}
-                        />
+                            handleLogout={
+                                handleLogout
+                            }
+                        /> */}
 
                         <div className="flex min-h-[calc(100vh-72px)] items-center justify-center px-5 pb-24 lg:pb-10">
 
@@ -187,7 +220,9 @@ const FetchProfile = () => {
 
                     </main>
 
-                    <MobileNav navigate={navigate} />
+                    <MobileNav
+                        navigate={navigate}
+                    />
 
                 </div>
 
@@ -207,506 +242,151 @@ const FetchProfile = () => {
                 <Sidebar
                     user={profile}
                     navigate={navigate}
-                    handleLogout={handleLogout}
+                    handleLogout={
+                        handleLogout
+                    }
                 />
 
                 <main className="w-full lg:ml-[245px]">
 
-                    <Navbar
+                    {/* <Navbar
                         navigate={navigate}
-                        handleLogout={handleLogout}
-                    />
+                        handleLogout={
+                            handleLogout
+                        }
+                    /> */}
 
                     <div className="mx-auto max-w-[1080px] px-4 pb-28 pt-5 sm:px-6 lg:px-7 lg:pb-10 lg:pt-7">
 
-                        <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_285px]">
+                        {/* Profile Header */}
 
-                            <section className="min-w-0">
+                        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
-                                <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                            {/* Cover */}
 
-                                    <div className="relative h-32 overflow-hidden bg-gradient-to-br from-[#09061c] via-[#1b1248] to-[#5c45df] sm:h-40">
+                            <div className="relative h-32 overflow-hidden bg-gradient-to-br from-[#09061c] via-[#1b1248] to-[#5c45df] sm:h-40">
 
-                                        <div className="absolute -right-16 -top-28 h-72 w-72 rounded-full bg-violet-500/30 blur-3xl" />
+                                <div className="absolute -right-16 -top-28 h-72 w-72 rounded-full bg-violet-500/30 blur-3xl" />
 
-                                        <div className="absolute bottom-[-120px] left-1/3 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl" />
+                                <div className="absolute bottom-[-120px] left-1/3 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl" />
+
+                            </div>
+
+                            <div className="px-5 pb-6 sm:px-7">
+
+                                {/* Profile Identity */}
+
+                                <div className="-mt-14 flex flex-col gap-5 sm:-mt-16 md:flex-row md:items-end md:justify-between">
+
+                                    <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-end">
+
+                                        <div className="relative shrink-0">
+
+                                            <img
+                                                src={
+                                                    profile.image ||
+                                                    defaultProfile
+                                                }
+                                                alt={`${profile.username}'s profile`}
+                                                className="h-28 w-28 rounded-full border-4 border-white bg-white object-cover shadow-lg sm:h-32 sm:w-32"
+                                            />
+
+                                            <span className="absolute bottom-1 right-1 h-5 w-5 rounded-full border-4 border-white bg-emerald-500" />
+
+                                        </div>
+
+                                        <div className="pb-1 text-center sm:text-left">
+
+                                            <h2 className="text-2xl font-bold text-slate-900">
+                                                {
+                                                    profile.username
+                                                }
+                                            </h2>
+
+                                        </div>
 
                                     </div>
 
-                                    <div className="px-5 pb-6 sm:px-7">
+                                    <div className="flex w-full md:w-auto">
 
-                                        <div className="-mt-14 flex flex-col gap-5 sm:-mt-16 md:flex-row md:items-end md:justify-between">
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                navigate(
+                                                    "/profile/edit"
+                                                )
+                                            }
+                                            className="flex w-full items-center justify-center gap-2 rounded-lg bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-700 md:w-auto"
+                                        >
+                                            <Edit3
+                                                size={15}
+                                            />
 
-                                            <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-end">
-
-                                                <div className="relative shrink-0">
-
-                                                    <img
-                                                        src={
-                                                            profile.image ||
-                                                            defaultProfile
-                                                        }
-                                                        alt={`${profile.username}'s profile`}
-                                                        className="h-28 w-28 rounded-full border-4 border-white bg-white object-cover shadow-lg sm:h-32 sm:w-32"
-                                                    />
-
-                                                    <span className="absolute bottom-1 right-1 h-5 w-5 rounded-full border-4 border-white bg-emerald-500" />
-
-                                                </div>
-
-                                                <div className="pb-1 text-center sm:text-left">
-
-                                                    <h2 className="text-2xl font-bold text-slate-900">
-                                                        {profile.username}
-                                                    </h2>
-
-                                                </div>
-
-                                            </div>
-
-                                            <div className="flex w-full md:w-auto">
-
-                                                <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        navigate(
-                                                            "/profile/edit"
-                                                        )
-                                                    }
-                                                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-700 md:w-auto"
-                                                >
-                                                    <Edit3 size={15} />
-                                                    Edit Profile
-                                                </button>
-
-                                            </div>
-
-                                        </div>
-
-                                        <div className="mt-5">
-
-                                            <p className="max-w-2xl whitespace-pre-line text-center text-sm leading-6 text-slate-600 sm:text-left">
-                                                {profile.bio ||
-                                                    "No Bio."}
-                                            </p>
-
-                                        </div>
-
-                                        <div className="mt-6 grid grid-cols-4 border-t border-slate-100 pt-5">
-
-                                            <div className="text-center">
-
-                                                <p className="text-lg font-bold text-slate-900">
-                                                    {totalPosts}
-                                                </p>
-
-                                                <p className="mt-0.5 text-xs text-slate-500">
-                                                    Posts
-                                                </p>
-
-                                            </div>
-
-                                            <div className="border-l border-slate-100 text-center">
-
-                                                <p className="text-lg font-bold text-slate-900">
-                                                    {totalProjects}
-                                                </p>
-
-                                                <p className="mt-0.5 text-xs text-slate-500">
-                                                    Projects
-                                                </p>
-
-                                            </div>
-
-                                            <div className="border-l border-slate-100 text-center">
-
-                                                <p className="text-lg font-bold text-slate-900">
-                                                    0
-                                                </p>
-
-                                                <p className="mt-0.5 text-xs text-slate-500">
-                                                    Followers
-                                                </p>
-
-                                            </div>
-
-                                            <div className="border-l border-slate-100 text-center">
-
-                                                <p className="text-lg font-bold text-slate-900">
-                                                    0
-                                                </p>
-
-                                                <p className="mt-0.5 text-xs text-slate-500">
-                                                    Following
-                                                </p>
-
-                                            </div>
-
-                                        </div>
+                                            Edit Profile
+                                        </button>
 
                                     </div>
 
                                 </div>
 
-                                <div className="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                                {/* Bio */}
 
-                                    <div className="grid grid-cols-5 overflow-x-auto border-b border-slate-100">
+                                <div className="mt-5">
 
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                handleTabChange("posts")
-                                            }
-                                            className={`relative whitespace-nowrap px-3 py-4 text-xs font-semibold transition sm:text-sm ${
-                                                activeTab === "posts"
-                                                    ? "text-violet-600"
-                                                    : "text-slate-500 hover:text-slate-800"
-                                            }`}
-                                        >
-                                            Posts
-
-                                            {activeTab === "posts" && (
-                                                <span className="absolute bottom-0 left-1/2 h-0.5 w-12 -translate-x-1/2 rounded-full bg-violet-600" />
-                                            )}
-                                        </button>
-
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                handleTabChange("projects")
-                                            }
-                                            className={`relative whitespace-nowrap px-3 py-4 text-xs font-semibold transition sm:text-sm ${
-                                                activeTab === "projects"
-                                                    ? "text-violet-600"
-                                                    : "text-slate-500 hover:text-slate-800"
-                                            }`}
-                                        >
-                                            Projects
-
-                                            {activeTab === "projects" && (
-                                                <span className="absolute bottom-0 left-1/2 h-0.5 w-12 -translate-x-1/2 rounded-full bg-violet-600" />
-                                            )}
-                                        </button>
-
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                handleTabChange("shorts")
-                                            }
-                                            className={`relative whitespace-nowrap px-3 py-4 text-xs font-semibold transition sm:text-sm ${
-                                                activeTab === "shorts"
-                                                    ? "text-violet-600"
-                                                    : "text-slate-500 hover:text-slate-800"
-                                            }`}
-                                        >
-                                            Shorts
-
-                                            {activeTab === "shorts" && (
-                                                <span className="absolute bottom-0 left-1/2 h-0.5 w-12 -translate-x-1/2 rounded-full bg-violet-600" />
-                                            )}
-                                        </button>
-
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                handleTabChange("about")
-                                            }
-                                            className={`relative whitespace-nowrap px-3 py-4 text-xs font-semibold transition sm:text-sm ${
-                                                activeTab === "about"
-                                                    ? "text-violet-600"
-                                                    : "text-slate-500 hover:text-slate-800"
-                                            }`}
-                                        >
-                                            About
-
-                                            {activeTab === "about" && (
-                                                <span className="absolute bottom-0 left-1/2 h-0.5 w-12 -translate-x-1/2 rounded-full bg-violet-600" />
-                                            )}
-                                        </button>
-
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                handleTabChange("saved")
-                                            }
-                                            className={`relative whitespace-nowrap px-3 py-4 text-xs font-semibold transition sm:text-sm ${
-                                                activeTab === "saved"
-                                                    ? "text-violet-600"
-                                                    : "text-slate-500 hover:text-slate-800"
-                                            }`}
-                                        >
-                                            Saved
-
-                                            {activeTab === "saved" && (
-                                                <span className="absolute bottom-0 left-1/2 h-0.5 w-12 -translate-x-1/2 rounded-full bg-violet-600" />
-                                            )}
-                                        </button>
-
-                                    </div>
-
-                                    <div className="p-4 sm:p-6">
-
-                                        {activeTab === "posts" && (
-                                            <>
-                                                {posts.length === 0 ? (
-                                                    <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-5 py-12 text-center">
-
-                                                        <h3 className="text-sm font-semibold text-slate-800">
-                                                            Your posts will appear here
-                                                        </h3>
-
-                                                        <p className="mx-auto mt-1 max-w-sm text-xs leading-5 text-slate-500">
-                                                            Start sharing your projects,
-                                                            knowledge and ideas with the
-                                                            SkillSync community.
-                                                        </p>
-
-                                                    </div>
-                                                ) : (
-                                                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-
-                                                        {posts.map((post) => (
-                                                            <button
-                                                                key={post._id}
-                                                                type="button"
-                                                                onClick={() =>
-                                                                    handlePostClick(
-                                                                        post._id
-                                                                    )
-                                                                }
-                                                                className="group relative aspect-square overflow-hidden rounded-lg bg-slate-100"
-                                                            >
-
-                                                                {post.image ? (
-                                                                    <img
-                                                                        src={post.image}
-                                                                        alt={
-                                                                            post.caption ||
-                                                                            "Post"
-                                                                        }
-                                                                        className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                                                                    />
-                                                                ) : (
-                                                                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 p-4">
-
-                                                                        <p className="line-clamp-4 text-xs font-medium text-slate-600">
-                                                                            {post.caption ||
-                                                                                "Post"}
-                                                                        </p>
-
-                                                                    </div>
-                                                                )}
-
-                                                                <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition duration-200 group-hover:bg-black/20">
-
-                                                                    <span className="scale-90 rounded-lg bg-black/60 px-3 py-1.5 text-xs font-semibold text-white opacity-0 transition duration-200 group-hover:scale-100 group-hover:opacity-100">
-                                                                        View Post
-                                                                    </span>
-
-                                                                </div>
-
-                                                            </button>
-                                                        ))}
-
-                                                    </div>
-                                                )}
-                                            </>
-                                        )}
-
-                                        {activeTab === "projects" && (
-                                            <>
-                                                {projects.length === 0 ? (
-                                                    <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-5 py-12 text-center">
-
-                                                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-white text-slate-400 shadow-sm">
-                                                            <Plus size={22} />
-                                                        </div>
-
-                                                        <h3 className="mt-4 text-sm font-semibold text-slate-800">
-                                                            No projects yet
-                                                        </h3>
-
-                                                        <p className="mx-auto mt-1 max-w-sm text-xs leading-5 text-slate-500">
-                                                            Showcase your projects and let other developers discover your work.
-                                                        </p>
-
-                                                        <button
-                                                            type="button"
-                                                            onClick={() =>
-                                                                navigate(
-                                                                    "/projects/create"
-                                                                )
-                                                            }
-                                                            className="mt-5 rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-slate-800"
-                                                        >
-                                                            Create Project
-                                                        </button>
-
-                                                    </div>
-                                                ) : (
-                                                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-
-                                                        {projects.map(
-                                                            (project) => (
-                                                                <button
-                                                                    key={
-                                                                        project._id
-                                                                    }
-                                                                    type="button"
-                                                                    onClick={() =>
-                                                                        handleProjectClick(
-                                                                            project._id
-                                                                        )
-                                                                    }
-                                                                    className="group relative aspect-square overflow-hidden rounded-lg bg-slate-100"
-                                                                >
-
-                                                                    {project.mediaType ===
-                                                                        "images" &&
-                                                                    project.images?.length >
-                                                                        0 ? (
-                                                                        <img
-                                                                            src={
-                                                                                project
-                                                                                    .images[0]
-                                                                            }
-                                                                            alt={
-                                                                                project.title
-                                                                            }
-                                                                            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                                                                        />
-                                                                    ) : project.mediaType ===
-                                                                          "video" &&
-                                                                      project.video ? (
-                                                                        <video
-                                                                            src={
-                                                                                project.video
-                                                                            }
-                                                                            muted
-                                                                            playsInline
-                                                                            preload="metadata"
-                                                                            className="h-full w-full object-cover"
-                                                                        />
-                                                                    ) : (
-                                                                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-violet-100 to-indigo-100 p-4">
-
-                                                                            <p className="line-clamp-4 text-center text-sm font-semibold text-slate-700">
-                                                                                {
-                                                                                    project.title
-                                                                                }
-                                                                            </p>
-
-                                                                        </div>
-                                                                    )}
-
-                                                                    <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition duration-200 group-hover:bg-black/30">
-
-                                                                        <span className="scale-90 rounded-lg bg-black/70 px-4 py-2 text-xs font-semibold text-white opacity-0 transition duration-200 group-hover:scale-100 group-hover:opacity-100">
-                                                                            View Project
-                                                                        </span>
-
-                                                                    </div>
-
-                                                                </button>
-                                                            )
-                                                        )}
-
-                                                    </div>
-                                                )}
-                                            </>
-                                        )}
-
-                                        {activeTab === "shorts" && (
-                                            <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-5 py-12 text-center">
-
-                                                <h3 className="text-sm font-semibold text-slate-800">
-                                                    Shorts coming soon
-                                                </h3>
-
-                                                <p className="mx-auto mt-1 max-w-sm text-xs leading-5 text-slate-500">
-                                                    Your short-form developer content will appear here.
-                                                </p>
-
-                                            </div>
-                                        )}
-
-                                        {activeTab === "about" && (
-                                            <div className="rounded-xl bg-slate-50 p-5">
-
-                                                <h3 className="text-sm font-semibold text-slate-800">
-                                                    About
-                                                </h3>
-
-                                                <p className="mt-3 whitespace-pre-line text-sm leading-6 text-slate-600">
-                                                    {profile.bio ||
-                                                        "No bio available."}
-                                                </p>
-
-                                            </div>
-                                        )}
-
-                                        {activeTab === "saved" && (
-                                            <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-5 py-12 text-center">
-
-                                                <h3 className="text-sm font-semibold text-slate-800">
-                                                    Saved posts
-                                                </h3>
-
-                                                <p className="mx-auto mt-1 max-w-sm text-xs leading-5 text-slate-500">
-                                                    Your saved content will appear here.
-                                                </p>
-
-                                            </div>
-                                        )}
-
-                                    </div>
+                                    <p className="max-w-3xl whitespace-pre-line text-center text-sm leading-6 text-slate-600 sm:text-left">
+                                        {profile.bio ||
+                                            "No Bio."}
+                                    </p>
 
                                 </div>
 
-                            </section>
+                                {/* Skills */}
 
-                            <aside>
-
-                                <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                                <div className="mt-6 border-t border-slate-100 pt-5">
 
                                     <div className="flex items-center justify-between">
 
-                                        <h2 className="text-base font-bold text-slate-900">
+                                        <h3 className="text-base font-bold text-slate-900">
                                             Skills
-                                        </h2>
+                                        </h3>
 
-                                        <span className="text-xs font-medium text-violet-600">
-                                            {profile.skills?.length || 0}
+                                        <span className="text-xs font-semibold text-violet-600">
+                                            {
+                                                profile.skills
+                                                    ?.length ||
+                                                0
+                                            }
                                         </span>
 
                                     </div>
 
-                                    {profile.skills?.length > 0 ? (
-                                        <div className="mt-5 space-y-4">
+                                    {profile.skills?.length >
+                                    0 ? (
+                                        <div className="mt-4 flex flex-wrap gap-2">
 
                                             {profile.skills.map(
-                                                (skill, index) => (
-                                                    <div
+                                                (
+                                                    skill,
+                                                    index
+                                                ) => (
+                                                    <span
                                                         key={`${skill}-${index}`}
+                                                        className="inline-flex items-center gap-2 rounded-lg bg-violet-50 px-3.5 py-2 text-sm font-medium text-violet-700"
                                                     >
 
-                                                        <div className="mb-1.5 flex items-center justify-between">
+                                                        <span className="h-1.5 w-1.5 rounded-full bg-violet-600" />
 
-                                                            <span className="text-xs font-semibold text-slate-700">
-                                                                {skill}
-                                                            </span>
+                                                        {
+                                                            skill
+                                                        }
 
-                                                        </div>
-
-                                                        <div className="h-1.5 overflow-hidden rounded-full bg-slate-100" />
-
-                                                    </div>
+                                                    </span>
                                                 )
                                             )}
 
                                         </div>
                                     ) : (
-                                        <div className="mt-5 rounded-xl bg-slate-50 px-4 py-7 text-center">
+                                        <div className="mt-4 rounded-xl bg-slate-50 px-4 py-5 text-center">
 
                                             <p className="text-xs text-slate-500">
                                                 No skills added yet.
@@ -715,9 +395,447 @@ const FetchProfile = () => {
                                         </div>
                                     )}
 
-                                </section>
+                                </div>
 
-                            </aside>
+                                {/* Stats */}
+
+                                <div className="mt-6 grid grid-cols-4 border-t border-slate-100 pt-5">
+
+                                    <div className="text-center">
+
+                                        <p className="text-lg font-bold text-slate-900">
+                                            {
+                                                totalPosts
+                                            }
+                                        </p>
+
+                                        <p className="mt-0.5 text-xs text-slate-500">
+                                            Posts
+                                        </p>
+
+                                    </div>
+
+                                    <div className="border-l border-slate-100 text-center">
+
+                                        <p className="text-lg font-bold text-slate-900">
+                                            {
+                                                totalProjects
+                                            }
+                                        </p>
+
+                                        <p className="mt-0.5 text-xs text-slate-500">
+                                            Projects
+                                        </p>
+
+                                    </div>
+
+                                    <div className="border-l border-slate-100 text-center">
+
+                                        <p className="text-lg font-bold text-slate-900">
+                                            {
+                                                totalShorts
+                                            }
+                                        </p>
+
+                                        <p className="mt-0.5 text-xs text-slate-500">
+                                            Shorts
+                                        </p>
+
+                                    </div>
+
+                                    <div className="border-l border-slate-100 text-center">
+
+                                        <p className="text-lg font-bold text-slate-900">
+                                            0
+                                        </p>
+
+                                        <p className="mt-0.5 text-xs text-slate-500">
+                                            Followers
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </section>
+
+                        {/* Content Tabs */}
+
+                        <div className="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+
+                            <div className="grid grid-cols-3 border-b border-slate-100">
+
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        handleTabChange(
+                                            "posts"
+                                        )
+                                    }
+                                    className={`relative px-3 py-4 text-xs font-semibold transition sm:text-sm ${
+                                        activeTab ===
+                                        "posts"
+                                            ? "text-violet-600"
+                                            : "text-slate-500 hover:text-slate-800"
+                                    }`}
+                                >
+                                    Posts
+
+                                    {activeTab ===
+                                        "posts" && (
+                                        <span className="absolute bottom-0 left-1/2 h-0.5 w-12 -translate-x-1/2 rounded-full bg-violet-600" />
+                                    )}
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        handleTabChange(
+                                            "projects"
+                                        )
+                                    }
+                                    className={`relative px-3 py-4 text-xs font-semibold transition sm:text-sm ${
+                                        activeTab ===
+                                        "projects"
+                                            ? "text-violet-600"
+                                            : "text-slate-500 hover:text-slate-800"
+                                    }`}
+                                >
+                                    Projects
+
+                                    {activeTab ===
+                                        "projects" && (
+                                        <span className="absolute bottom-0 left-1/2 h-0.5 w-12 -translate-x-1/2 rounded-full bg-violet-600" />
+                                    )}
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        handleTabChange(
+                                            "shorts"
+                                        )
+                                    }
+                                    className={`relative px-3 py-4 text-xs font-semibold transition sm:text-sm ${
+                                        activeTab ===
+                                        "shorts"
+                                            ? "text-violet-600"
+                                            : "text-slate-500 hover:text-slate-800"
+                                    }`}
+                                >
+                                    Shorts
+
+                                    {activeTab ===
+                                        "shorts" && (
+                                        <span className="absolute bottom-0 left-1/2 h-0.5 w-12 -translate-x-1/2 rounded-full bg-violet-600" />
+                                    )}
+                                </button>
+
+                            </div>
+
+                            <div className="p-4 sm:p-6">
+
+                                {/* Posts */}
+
+                                {activeTab ===
+                                    "posts" && (
+                                    <>
+                                        {posts.length ===
+                                        0 ? (
+                                            <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-5 py-12 text-center">
+
+                                                <h3 className="text-sm font-semibold text-slate-800">
+                                                    Your posts will appear here
+                                                </h3>
+
+                                                <p className="mx-auto mt-1 max-w-sm text-xs leading-5 text-slate-500">
+                                                    Start sharing your projects,
+                                                    knowledge and ideas with the
+                                                    SkillSync community.
+                                                </p>
+
+                                            </div>
+                                        ) : (
+                                            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+
+                                                {posts.map(
+                                                    (
+                                                        post
+                                                    ) => (
+                                                        <button
+                                                            key={
+                                                                post._id
+                                                            }
+                                                            type="button"
+                                                            onClick={() =>
+                                                                handlePostClick(
+                                                                    post._id
+                                                                )
+                                                            }
+                                                            className="group relative aspect-square overflow-hidden rounded-lg bg-slate-100"
+                                                        >
+
+                                                            {post.image ? (
+                                                                <img
+                                                                    src={
+                                                                        post.image
+                                                                    }
+                                                                    alt={
+                                                                        post.caption ||
+                                                                        "Post"
+                                                                    }
+                                                                    className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                                                                />
+                                                            ) : (
+                                                                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 p-4">
+
+                                                                    <p className="line-clamp-4 text-xs font-medium text-slate-600">
+                                                                        {
+                                                                            post.caption
+                                                                        }
+                                                                    </p>
+
+                                                                </div>
+                                                            )}
+
+                                                            <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition duration-200 group-hover:bg-black/20">
+
+                                                                <span className="scale-90 rounded-lg bg-black/60 px-3 py-1.5 text-xs font-semibold text-white opacity-0 transition duration-200 group-hover:scale-100 group-hover:opacity-100">
+                                                                    View Post
+                                                                </span>
+
+                                                            </div>
+
+                                                        </button>
+                                                    )
+                                                )}
+
+                                            </div>
+                                        )}
+                                    </>
+                                )}
+
+                                {/* Projects */}
+
+                                {activeTab ===
+                                    "projects" && (
+                                    <>
+                                        {projects.length ===
+                                        0 ? (
+                                            <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-5 py-12 text-center">
+
+                                                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-white text-slate-400 shadow-sm">
+                                                    <Plus
+                                                        size={
+                                                            22
+                                                        }
+                                                    />
+                                                </div>
+
+                                                <h3 className="mt-4 text-sm font-semibold text-slate-800">
+                                                    No projects yet
+                                                </h3>
+
+                                                <p className="mx-auto mt-1 max-w-sm text-xs leading-5 text-slate-500">
+                                                    Showcase your projects and let
+                                                    other developers discover your
+                                                    work.
+                                                </p>
+
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        navigate(
+                                                            "/projects/create"
+                                                        )
+                                                    }
+                                                    className="mt-5 rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-slate-800"
+                                                >
+                                                    Create Project
+                                                </button>
+
+                                            </div>
+                                        ) : (
+                                            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+
+                                                {projects.map(
+                                                    (
+                                                        project
+                                                    ) => (
+                                                        <button
+                                                            key={
+                                                                project._id
+                                                            }
+                                                            type="button"
+                                                            onClick={() =>
+                                                                handleProjectClick(
+                                                                    project._id
+                                                                )
+                                                            }
+                                                            className="group relative aspect-square overflow-hidden rounded-lg bg-slate-100"
+                                                        >
+
+                                                            {project.mediaType ===
+                                                                "images" &&
+                                                            project.images?.length >
+                                                                0 ? (
+                                                                <img
+                                                                    src={
+                                                                        project
+                                                                            .images[0]
+                                                                    }
+                                                                    alt={
+                                                                        project.title
+                                                                    }
+                                                                    className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                                                                />
+                                                            ) : project.mediaType ===
+                                                                  "video" &&
+                                                              project.video ? (
+                                                                <video
+                                                                    src={
+                                                                        project.video
+                                                                    }
+                                                                    muted
+                                                                    playsInline
+                                                                    preload="metadata"
+                                                                    className="h-full w-full object-cover"
+                                                                />
+                                                            ) : (
+                                                                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-violet-100 to-indigo-100 p-4">
+
+                                                                    <p className="line-clamp-4 text-center text-sm font-semibold text-slate-700">
+                                                                        {
+                                                                            project.title
+                                                                        }
+                                                                    </p>
+
+                                                                </div>
+                                                            )}
+
+                                                            <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition duration-200 group-hover:bg-black/30">
+
+                                                                <span className="scale-90 rounded-lg bg-black/70 px-4 py-2 text-xs font-semibold text-white opacity-0 transition duration-200 group-hover:scale-100 group-hover:opacity-100">
+                                                                    View Project
+                                                                </span>
+
+                                                            </div>
+
+                                                        </button>
+                                                    )
+                                                )}
+
+                                            </div>
+                                        )}
+                                    </>
+                                )}
+
+                                {/* Shorts */}
+
+                                {activeTab ===
+                                    "shorts" && (
+                                    <>
+                                        {shorts.length ===
+                                        0 ? (
+                                            <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-5 py-12 text-center">
+
+                                                <h3 className="text-sm font-semibold text-slate-800">
+                                                    No Shorts yet
+                                                </h3>
+
+                                                <p className="mx-auto mt-1 max-w-sm text-xs leading-5 text-slate-500">
+                                                    Share short-form developer
+                                                    content with the SkillSync
+                                                    community.
+                                                </p>
+
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        navigate(
+                                                            "/shorts/create"
+                                                        )
+                                                    }
+                                                    className="mt-5 rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-slate-800"
+                                                >
+                                                    Create Short
+                                                </button>
+
+                                            </div>
+                                        ) : (
+                                            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+
+                                                {shorts.map(
+                                                    (
+                                                        short
+                                                    ) => (
+                                                        <button
+                                                            key={
+                                                                short._id
+                                                            }
+                                                            type="button"
+                                                            onClick={() =>
+                                                                handleShortClick(
+                                                                    short._id
+                                                                )
+                                                            }
+                                                            className="group relative aspect-[9/16] overflow-hidden rounded-lg bg-black"
+                                                        >
+
+                                                            {short.video ? (
+                                                                <video
+                                                                    src={
+                                                                        short.video
+                                                                    }
+                                                                    muted
+                                                                    playsInline
+                                                                    preload="metadata"
+                                                                    className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                                                                />
+                                                            ) : (
+                                                                <div className="flex h-full w-full items-center justify-center bg-slate-200 p-4">
+
+                                                                    <p className="text-xs font-medium text-slate-600">
+                                                                        Short
+                                                                    </p>
+
+                                                                </div>
+                                                            )}
+
+                                                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+
+                                                            {short.caption && (
+                                                                <div className="absolute bottom-0 left-0 right-0 p-3 text-left">
+
+                                                                    <p className="line-clamp-2 text-xs font-medium text-white">
+                                                                        {
+                                                                            short.caption
+                                                                        }
+                                                                    </p>
+
+                                                                </div>
+                                                            )}
+
+                                                            <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition duration-200 group-hover:bg-black/20">
+
+                                                                <span className="scale-90 rounded-lg bg-black/70 px-3 py-1.5 text-xs font-semibold text-white opacity-0 transition duration-200 group-hover:scale-100 group-hover:opacity-100">
+                                                                    View Short
+                                                                </span>
+
+                                                            </div>
+
+                                                        </button>
+                                                    )
+                                                )}
+
+                                            </div>
+                                        )}
+                                    </>
+                                )}
+
+                            </div>
 
                         </div>
 
@@ -725,7 +843,9 @@ const FetchProfile = () => {
 
                 </main>
 
-                <MobileNav navigate={navigate} />
+                <MobileNav
+                    navigate={navigate}
+                />
 
             </div>
 
