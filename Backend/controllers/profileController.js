@@ -4,20 +4,22 @@ import cloudinary from "../config/cloudinary.js";
 import streamifier from "streamifier";
 import { Project } from "../models/project.js";
 import { Short } from "../models/shorts.js";
+import { Connection } from "../models/connections.js";
+
 
 export const fetchProfile = async (req, res) => {
     try {
         const { id } = req.user;
+        const targetId = req.params.userId || id;
 
-        if (!id) {
+        if (!targetId) {
             return res.status(400).json({
                 success: false,
                 message: "User Id is not given",
             });
         }
 
-        const user = await User.findById(id)
-            .select("-password");
+        const user = await User.findById(targetId).select("-password");
 
         if (!user) {
             return res.status(404).json({
@@ -26,67 +28,49 @@ export const fetchProfile = async (req, res) => {
             });
         }
 
-        const totalPosts =
-            await Post.countDocuments({
-                userId: id,
-            });
+        const totalPosts = await Post.countDocuments({ userId: targetId });
 
-        const posts = await Post.find({
-            userId: id,
+        const posts = await Post.find({ userId: targetId })
+            .populate("userId", "username image")
+            .sort({ createdAt: -1 });
+
+        const totalProjects = await Project.countDocuments({ userId: targetId });
+
+        const projects = await Project.find({ userId: targetId })
+            .populate("userId", "username image")
+            .sort({ createdAt: -1 });
+
+        const totalShorts = await Short.countDocuments({ userId: targetId });
+
+        const shorts = await Short.find({ userId: targetId })
+            .populate("userId", "username image")
+            .sort({ createdAt: -1 });
+
+        const totalConnections = await Connection.countDocuments({
+            $or: [{ requester: targetId }, { recipient: targetId }],
+            status: "accepted",
+        });
+
+        const connections = await Connection.find({
+            $or: [{ requester: targetId }, { recipient: targetId }],
+            status: "accepted",
         })
-            .populate(
-                "userId",
-                "username image"
-            )
-            .sort({
-                createdAt: -1,
-            });
-
-        const totalProjects =
-            await Project.countDocuments({
-                userId: id,
-            });
-
-        const projects = await Project.find({
-            userId: id,
-        })
-            .populate(
-                "userId",
-                "username image"
-            )
-            .sort({
-                createdAt: -1,
-            });
-
-        const totalShorts =
-            await Short.countDocuments({
-                userId: id,
-            });
-
-        const shorts = await Short.find({
-            userId: id,
-        })
-            .populate(
-                "userId",
-                "username image"
-            )
-            .sort({
-                createdAt: -1,
-            });
+            .populate("requester", "username image")
+            .populate("recipient", "username image")
+            .sort({ createdAt: -1 });
 
         return res.status(200).json({
             success: true,
             message: "Profile fetched successfully",
             user,
-
             totalPosts,
             posts,
-
             totalProjects,
             projects,
-
             totalShorts,
             shorts,
+            totalConnections,
+            connections,
         });
     } catch (error) {
         console.log(error);
@@ -97,6 +81,8 @@ export const fetchProfile = async (req, res) => {
         });
     }
 };
+
+
 export const editProfile = async (req, res) => {
     try {
         const { id } = req.user;

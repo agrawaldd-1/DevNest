@@ -9,6 +9,7 @@ import upload from "../middleware/uploadMiddleware.js";
 const router = express.Router();
 
 router.get("/", protect, fetchProfile);
+router.get("/:userId", protect, fetchProfile);
 
 router.put(
     "/",
