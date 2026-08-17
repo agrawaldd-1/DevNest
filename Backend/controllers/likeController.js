@@ -2,6 +2,7 @@ import { Post } from "../models/post.js";
 import { Project } from "../models/project.js";
 import { Short } from "../models/shorts.js";
 import { Like } from "../models/likes.js";
+import { createNotification } from "./notificationController.js";
 
 export const toggleLike = async (req, res) => {
     try {
@@ -77,6 +78,15 @@ export const toggleLike = async (req, res) => {
             });
 
             liked = true;
+            if (target.user.toString() !== id.toString()) {
+                await createNotification({
+                    sender: id,
+                    recipient: target.user,
+                    type: "LIKE",
+                    referenceId: targetId,
+                    referenceType: targetModel
+                });
+            }
         }
 
         const likeCount =
