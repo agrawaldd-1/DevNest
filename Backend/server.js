@@ -10,7 +10,9 @@ import projectRoutes from "./router/projectRoutes.js";
 import likeRoutes from "./router/likeRoutes.js";
 import commentRoutes from "./router/commentRoutes.js";
 import shortRoutes from "./router/shortRoutes.js";
-import connectionRoutes from "./router/connectionRoutes.js";
+import connectionRoutes from "./routes/connectionRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
+
 
 dotenv.config({
     path: ".env",
@@ -31,6 +33,7 @@ app.use("/api/shorts", shortRoutes);
 app.use("/api/engagement", likeRoutes);
 app.use("/api/engagement", commentRoutes);
 app.use("/api/connections", connectionRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.get("/", (req, res) => {
     res.send("Server Running...");
