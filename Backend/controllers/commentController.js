@@ -2,6 +2,7 @@ import { Post } from "../models/post.js";
 import { Project } from "../models/project.js";
 import { Short } from "../models/shorts.js";
 import { Comment } from "../models/comments.js";
+import { createNotification } from "./notificationController.js";
 
 export const addComment = async (req, res) => {
     try {
@@ -69,6 +70,15 @@ export const addComment = async (req, res) => {
             targetModel,
             content: content.trim(),
         });
+        if (target.user.toString() !== id.toString()) {
+            await createNotification({
+                sender: id,
+                recipient: target.user,
+                type: "COMMENT",
+                referenceId: targetId,
+                referenceType: targetModel
+            });
+        }
 
         const populatedComment =
             await Comment.findById(comment._id)
