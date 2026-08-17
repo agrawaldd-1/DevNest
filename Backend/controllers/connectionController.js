@@ -1,5 +1,7 @@
 import { User } from "../models/user.js";
 import { Connection } from "../models/connections.js";
+import { createNotification } from "./notificationController.js";
+
 
 export const sendConnectionRequest = async (req, res) => {
     try {
@@ -56,7 +58,8 @@ export const sendConnectionRequest = async (req, res) => {
             }
 
             if (
-                existingConnection.status === "pending" && existingConnection.requester.toString() === id
+                existingConnection.status === "pending" &&
+                existingConnection.requester.toString() === id
             ) {
                 return res.status(409).json({
                     success: false,
@@ -65,7 +68,8 @@ export const sendConnectionRequest = async (req, res) => {
             }
 
             if (
-                existingConnection.status === "pending" && existingConnection.recipient.toString() === id
+                existingConnection.status === "pending" &&
+                existingConnection.recipient.toString() === id
             ) {
                 return res.status(409).json({
                     success: false,
@@ -82,6 +86,14 @@ export const sendConnectionRequest = async (req, res) => {
             requester: id,
             recipient: targetId,
             status: "pending",
+        });
+
+        await createNotification({
+            sender: id,
+            recipient: targetId,
+            type: "CONNECTION_REQUEST",
+            referenceId: null,
+            referenceType: null
         });
 
         return res.status(201).json({
@@ -135,6 +147,14 @@ export const acceptConnectionRequest = async (req, res) => {
         existingConnection.status = "accepted";
         await existingConnection.save();
 
+        await createNotification({
+            sender: id,
+            recipient: existingConnection.requester,
+            type: "CONNECTION_ACCEPTED",
+            referenceId: null,
+            referenceType: null
+        });
+
         return res.status(200).json({
             success: true,
             message: "Connection request accepted",
@@ -149,6 +169,7 @@ export const acceptConnectionRequest = async (req, res) => {
         });
     }
 };
+
 
 export const rejectConnectionRequest = async (req, res) => {
     try {
@@ -181,8 +202,10 @@ export const rejectConnectionRequest = async (req, res) => {
                 message: "Connection request not found",
             });
         }
+
         existingConnection.status = "rejected";
         await existingConnection.save();
+
         return res.status(200).json({
             success: true,
             message: "Connection request rejected",
@@ -198,6 +221,7 @@ export const rejectConnectionRequest = async (req, res) => {
         });
     }
 }
+
 
 export const getAllConnections = async (req, res) => {
     try {
