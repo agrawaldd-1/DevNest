@@ -31,14 +31,7 @@ const notificationSchema = new mongoose.Schema({
         enum: ["Post", "Project", "Short"],
         default: null
     },
-    isRead: {
-        type: Boolean,
-        default: false
-    },
-    readAt: {
-        type: Date,
-        default: null
-    }
+    
 }, {
     timestamps: true
 });
