@@ -10,8 +10,8 @@ import projectRoutes from "./router/projectRoutes.js";
 import likeRoutes from "./router/likeRoutes.js";
 import commentRoutes from "./router/commentRoutes.js";
 import shortRoutes from "./router/shortRoutes.js";
-import connectionRoutes from "./routes/connectionRoutes.js";
-import notificationRoutes from "./routes/notificationRoutes.js";
+import connectionRoutes from "./router/connectionRoutes.js";
+import notificationRoutes from "./router/notificationRoutes.js";
 
 
 dotenv.config({
