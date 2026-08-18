@@ -20,27 +20,27 @@ export const createNotification = async ({
     return notification;
 };
 
-import { Notification } from "../models/Notification.js";
+// import { Notification } from "../models/Notification.js";
 
-export const createNotification = async ({
-    sender,
-    recipient,
-    type,
-    referenceId,
-    referenceType
-}) => {
-    const notification = new Notification({
-        sender,
-        recipient,
-        type,
-        referenceId,
-        referenceType
-    });
+// export const createNotification = async ({
+//     sender,
+//     recipient,
+//     type,
+//     referenceId,
+//     referenceType
+// }) => {
+//     const notification = new Notification({
+//         sender,
+//         recipient,
+//         type,
+//         referenceId,
+//         referenceType
+//     });
 
-    await notification.save();
+//     await notification.save();
 
-    return notification;
-};
+//     return notification;
+// };
 
 export const getNotifications = async (req, res) => {
     try {
