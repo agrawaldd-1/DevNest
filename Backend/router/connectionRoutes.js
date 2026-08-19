@@ -3,7 +3,8 @@ import {
     sendConnectionRequest,
     acceptConnectionRequest,
     rejectConnectionRequest,
-    getAllConnections
+    getAllConnections,
+    getConnectionStatus
 } from "../controllers/connectionController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -13,5 +14,5 @@ router.post("/request/:targetId", protect, sendConnectionRequest);
 router.patch("/accept/:connectionId", protect, acceptConnectionRequest);
 router.patch("/reject/:connectionId", protect, rejectConnectionRequest);
 router.get("/", protect, getAllConnections);
-
+router.get("/status/:targetId", protect, getConnectionStatus);
 export default router;

@@ -18,6 +18,6 @@ const connectionSchema = new mongoose.Schema({
     }
 }, {
     timestamps: true
-})
+});
 
-export const Connection = mongoose.model("Connection" , connectionSchema);
+export const Connection = mongoose.model("Connection", connectionSchema);
