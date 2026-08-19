@@ -16,11 +16,7 @@ export const toggleLike = async (req, res) => {
             });
         }
 
-        if (
-            !["post", "project", "short"].includes(
-                targetType
-            )
-        ) {
+        if (!["post", "project", "short"].includes(targetType)) {
             return res.status(400).json({
                 success: false,
                 message: "Invalid target type",
@@ -45,9 +41,7 @@ export const toggleLike = async (req, res) => {
             targetName = "Short";
         }
 
-        const target = await Model.findById(
-            targetId
-        );
+        const target = await Model.findById(targetId);
 
         if (!target) {
             return res.status(404).json({
@@ -65,10 +59,7 @@ export const toggleLike = async (req, res) => {
         let liked;
 
         if (existingLike) {
-            await Like.findByIdAndDelete(
-                existingLike._id
-            );
-
+            await Like.findByIdAndDelete(existingLike._id);
             liked = false;
         } else {
             await Like.create({
@@ -78,22 +69,37 @@ export const toggleLike = async (req, res) => {
             });
 
             liked = true;
-            if (target.user.toString() !== id.toString()) {
-                await createNotification({
-                    sender: id,
-                    recipient: target.user,
-                    type: "LIKE",
-                    referenceId: targetId,
-                    referenceType: targetModel
-                });
+
+            let ownerId;
+
+            if (targetType === "post") {
+                ownerId = target.userId;
+            } else {
+                ownerId = target.userId;
+            }
+
+            if (ownerId && ownerId.toString() !== id.toString()) {
+                try {
+                    await createNotification({
+                        sender: id,
+                        recipient: ownerId,
+                        type: "LIKE",
+                        referenceId: targetId,
+                        referenceType: targetModel,
+                    });
+                } catch (notificationError) {
+                    console.error(
+                        "Like notification error:",
+                        notificationError
+                    );
+                }
             }
         }
 
-        const likeCount =
-            await Like.countDocuments({
-                target: targetId,
-                targetModel,
-            });
+        const likeCount = await Like.countDocuments({
+            target: targetId,
+            targetModel,
+        });
 
         return res.status(200).json({
             success: true,
@@ -104,10 +110,7 @@ export const toggleLike = async (req, res) => {
                 : "Unliked successfully",
         });
     } catch (error) {
-        console.error(
-            "Toggle Like Error:",
-            error
-        );
+        console.error("Toggle Like Error:", error);
 
         return res.status(500).json({
             success: false,

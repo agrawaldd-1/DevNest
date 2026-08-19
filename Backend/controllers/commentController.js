@@ -24,11 +24,7 @@ export const addComment = async (req, res) => {
             });
         }
 
-        if (
-            !["post", "project", "short"].includes(
-                targetType
-            )
-        ) {
+        if (!["post", "project", "short"].includes(targetType)) {
             return res.status(400).json({
                 success: false,
                 message: "Invalid target type",
@@ -53,9 +49,7 @@ export const addComment = async (req, res) => {
             targetName = "Short";
         }
 
-        const target = await Model.findById(
-            targetId
-        );
+        const target = await Model.findById(targetId);
 
         if (!target) {
             return res.status(404).json({
@@ -70,22 +64,28 @@ export const addComment = async (req, res) => {
             targetModel,
             content: content.trim(),
         });
-        if (target.user.toString() !== id.toString()) {
-            await createNotification({
-                sender: id,
-                recipient: target.user,
-                type: "COMMENT",
-                referenceId: targetId,
-                referenceType: targetModel
-            });
+
+        const ownerId = target.userId;
+
+        if (ownerId && ownerId.toString() !== id.toString()) {
+            try {
+                await createNotification({
+                    sender: id,
+                    recipient: ownerId,
+                    type: "COMMENT",
+                    referenceId: targetId,
+                    referenceType: targetModel,
+                });
+            } catch (notificationError) {
+                console.error(
+                    "Comment notification error:",
+                    notificationError
+                );
+            }
         }
 
-        const populatedComment =
-            await Comment.findById(comment._id)
-                .populate(
-                    "user",
-                    "username image"
-                );
+        const populatedComment = await Comment.findById(comment._id)
+            .populate("user", "username image");
 
         return res.status(201).json({
             success: true,
@@ -93,10 +93,7 @@ export const addComment = async (req, res) => {
             comment: populatedComment,
         });
     } catch (error) {
-        console.error(
-            "Add Comment Error:",
-            error
-        );
+        console.error("Add Comment Error:", error);
 
         return res.status(500).json({
             success: false,
@@ -107,14 +104,9 @@ export const addComment = async (req, res) => {
 
 export const getComments = async (req, res) => {
     try {
-        const { targetId, targetType } =
-            req.params;
+        const { targetId, targetType } = req.params;
 
-        if (
-            !["post", "project", "short"].includes(
-                targetType
-            )
-        ) {
+        if (!["post", "project", "short"].includes(targetType)) {
             return res.status(400).json({
                 success: false,
                 message: "Invalid target type",
@@ -135,13 +127,8 @@ export const getComments = async (req, res) => {
             target: targetId,
             targetModel,
         })
-            .populate(
-                "user",
-                "username image"
-            )
-            .sort({
-                createdAt: -1,
-            });
+            .populate("user", "username image")
+            .sort({ createdAt: -1 });
 
         return res.status(200).json({
             success: true,
@@ -149,10 +136,7 @@ export const getComments = async (req, res) => {
             comments,
         });
     } catch (error) {
-        console.error(
-            "Get Comments Error:",
-            error
-        );
+        console.error("Get Comments Error:", error);
 
         return res.status(500).json({
             success: false,
