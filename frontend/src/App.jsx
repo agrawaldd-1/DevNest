@@ -23,6 +23,9 @@ import ViewProject from "./components/ViewProject.jsx";
 import Shorts from "./components/Shorts.jsx";
 import CreateShort from "./components/CreateShort.jsx";
 import ViewShort from "./components/ViewShort.jsx";
+import NotificationDropdown from "./components/NotificationDropdown.jsx";
+
+import Search from "./components/Search.jsx";
 
 const router = createBrowserRouter([
     {
@@ -46,6 +49,14 @@ const router = createBrowserRouter([
 
     {
         path: "/profile",
+        element: (
+            <ProtectedRoute>
+                <FetchProfile />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/profile/:userId",
         element: (
             <ProtectedRoute>
                 <FetchProfile />
@@ -132,6 +143,10 @@ const router = createBrowserRouter([
         </ProtectedRoute>
     ),
 },
+{
+    path : "/search",
+    element : (<ProtectedRoute><Search/></ProtectedRoute>)
+}
 ]);
 
 function App() {
