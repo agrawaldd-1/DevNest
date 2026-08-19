@@ -12,6 +12,7 @@ import commentRoutes from "./router/commentRoutes.js";
 import shortRoutes from "./router/shortRoutes.js";
 import connectionRoutes from "./router/connectionRoutes.js";
 import notificationRoutes from "./router/notificationRoutes.js";
+import searchRoutes from "./router/searchRoutes.js";
 
 
 dotenv.config({
@@ -34,6 +35,7 @@ app.use("/api/engagement", likeRoutes);
 app.use("/api/engagement", commentRoutes);
 app.use("/api/connections", connectionRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/search", searchRoutes);
 
 app.get("/", (req, res) => {
     res.send("Server Running...");

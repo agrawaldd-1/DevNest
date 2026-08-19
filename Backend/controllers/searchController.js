@@ -1,4 +1,4 @@
-import { User } from "../models/User.js";
+import { User } from "../models/user.js";
 import { Project } from "../models/project.js";
 
 export const searchBar = async (req, res) => {
