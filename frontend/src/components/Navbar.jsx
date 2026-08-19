@@ -3,13 +3,15 @@ import {
     LogOut,
     PenSquare,
 } from "lucide-react";
+import { useState } from "react";
+import NotificationDropdown from "./NotificationDropdown.jsx";
 
 const Navbar = ({ navigate, handleLogout }) => {
+    const [showNotifications, setShowNotifications] = useState(false);
+
     return (
         <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-[#f5f7fb]/95 backdrop-blur-xl">
-
             <div className="mx-auto flex h-[72px] max-w-[1080px] items-center justify-between px-5 sm:px-7">
-
                 <div>
                     <p className="text-xs font-medium text-slate-400">
                         Your workspace
@@ -21,7 +23,6 @@ const Navbar = ({ navigate, handleLogout }) => {
                 </div>
 
                 <div className="flex items-center gap-2">
-
                     <button
                         onClick={() => navigate("/create-post")}
                         className="hidden h-10 items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-4 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:shadow-blue-600/30 sm:flex"
@@ -30,13 +31,22 @@ const Navbar = ({ navigate, handleLogout }) => {
                         Create Post
                     </button>
 
-                    <button
-                        className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:border-blue-200 hover:text-blue-600"
-                    >
-                        <Bell size={19} />
+                    <div className="relative">
+                        <button
+                            type="button"
+                            onClick={() => setShowNotifications((previous) => !previous)}
+                            className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:border-blue-200 hover:text-blue-600"
+                        >
+                            <Bell size={19} />
 
-                        <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-blue-600" />
-                    </button>
+                            <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-blue-600" />
+                        </button>
+
+                        <NotificationDropdown
+                            open={showNotifications}
+                            onClose={() => setShowNotifications(false)}
+                        />
+                    </div>
 
                     <button
                         onClick={handleLogout}
@@ -48,11 +58,8 @@ const Navbar = ({ navigate, handleLogout }) => {
                             Logout
                         </span>
                     </button>
-
                 </div>
-
             </div>
-
         </header>
     );
 };
