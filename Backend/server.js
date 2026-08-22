@@ -51,6 +51,6 @@ const port = process.env.PORT || 5000;
 const server = createServer(app);
 initializeSocket(server);
 
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`🚀 Server Running On Port ${port}`);
 });
