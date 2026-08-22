@@ -1,0 +1,1 @@
+export const getRoomId = (userA, userB) =>[userA.toString(), userB.toString()].sort().join("@");
