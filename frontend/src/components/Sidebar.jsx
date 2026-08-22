@@ -41,7 +41,7 @@ const Sidebar = ({ user, handleLogout }) => {
         },
         {
             name: "Chat",
-            path: "/chat",
+            path: "/messages",
             icon: MessageSquare,
         },
     ];
