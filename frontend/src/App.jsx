@@ -26,6 +26,8 @@ import ViewShort from "./components/ViewShort.jsx";
 import NotificationDropdown from "./components/NotificationDropdown.jsx";
 
 import Search from "./components/Search.jsx";
+import Chat from "./components/Chat.jsx";
+
 
 const router = createBrowserRouter([
     {
@@ -136,17 +138,34 @@ const router = createBrowserRouter([
         ),
     },
     {
-    path: "/shorts/:shortId",
-    element: (
-        <ProtectedRoute>
-            <ViewShort />
-        </ProtectedRoute>
-    ),
-},
-{
-    path : "/search",
-    element : (<ProtectedRoute><Search/></ProtectedRoute>)
-}
+        path: "/shorts/:shortId",
+        element: (
+            <ProtectedRoute>
+                <ViewShort />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/search",
+        element: (<ProtectedRoute><Search /></ProtectedRoute>)
+    },
+    {
+        path: "/messages",
+        element: (
+            <ProtectedRoute>
+                <Chat />
+            </ProtectedRoute>
+        ),
+    },
+
+    {
+        path: "/messages/:targetId",
+        element: (
+            <ProtectedRoute>
+                <Chat />
+            </ProtectedRoute>
+        ),
+    },
 ]);
 
 function App() {
