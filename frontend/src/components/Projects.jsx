@@ -161,7 +161,7 @@ const Projects = () => {
                                     </h1>
 
                                     <p className="mt-1 text-sm text-slate-500">
-                                        Discover projects built by developers on SkillSync.
+                                        Discover projects built by developers on DevNest.
                                     </p>
 
                                 </div>
