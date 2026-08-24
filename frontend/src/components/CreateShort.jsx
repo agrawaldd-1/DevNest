@@ -142,7 +142,7 @@ const CreateShort = () => {
 
                         <p className="mt-1 text-sm text-slate-500">
                             Share a short video with
-                            the SkillSync community.
+                            the DevNest community.
                         </p>
                     </div>
 
