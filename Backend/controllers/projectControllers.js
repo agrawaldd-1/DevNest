@@ -5,21 +5,47 @@ import { Comment } from "../models/comments.js";
 import cloudinary from "../config/cloudinary.js";
 import streamifier from "streamifier";
 
-const uploadToCloudinary = (file, resourceType, folder) => {
+const uploadToCloudinary = (
+    file,
+    resourceType,
+    folder
+) => {
     return new Promise((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-            {
-                folder,
-                resource_type: resourceType,
-            },
-            (error, result) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(result);
-                }
-            }
-        );
+        const uploadOptions = {
+            folder,
+            resource_type: resourceType,
+        };
+
+        let uploadStream;
+
+        if (resourceType === "video") {
+            uploadStream =
+                cloudinary.uploader.upload_chunked_stream(
+                    {
+                        ...uploadOptions,
+                        chunk_size: 6 * 1024 * 1024,
+                    },
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+        } else {
+            uploadStream =
+                cloudinary.uploader.upload_stream(
+                    uploadOptions,
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+        }
 
         streamifier
             .createReadStream(file.buffer)
@@ -38,7 +64,9 @@ export const createProject = async (req, res) => {
             });
         }
 
-        const user = await User.findById(id).select("-password");
+        const user = await User.findById(id).select(
+            "-password"
+        );
 
         if (!user) {
             return res.status(404).json({
@@ -91,13 +119,15 @@ export const createProject = async (req, res) => {
                 if (!Array.isArray(parsedTechStack)) {
                     return res.status(400).json({
                         success: false,
-                        message: "Tech stack must be an array",
+                        message:
+                            "Tech stack must be an array",
                     });
                 }
             } catch (error) {
                 return res.status(400).json({
                     success: false,
-                    message: "Invalid tech stack format",
+                    message:
+                        "Invalid tech stack format",
                 });
             }
         }
@@ -114,7 +144,8 @@ export const createProject = async (req, res) => {
                 if (!Array.isArray(parsedLinks)) {
                     return res.status(400).json({
                         success: false,
-                        message: "Links must be an array",
+                        message:
+                            "Links must be an array",
                     });
                 }
 
@@ -133,7 +164,8 @@ export const createProject = async (req, res) => {
             } catch (error) {
                 return res.status(400).json({
                     success: false,
-                    message: "Invalid links format",
+                    message:
+                        "Invalid links format",
                 });
             }
         }
@@ -186,6 +218,10 @@ export const createProject = async (req, res) => {
         let video = "";
         let videoPublicId = "";
 
+        // =========================
+        // IMAGE UPLOAD
+        // =========================
+
         if (mediaType === "images") {
             for (const file of imageFiles) {
                 const uploadResult =
@@ -205,6 +241,10 @@ export const createProject = async (req, res) => {
             }
         }
 
+        // =========================
+        // VIDEO UPLOAD
+        // =========================
+
         if (mediaType === "video") {
             const uploadResult =
                 await uploadToCloudinary(
@@ -219,6 +259,10 @@ export const createProject = async (req, res) => {
             videoPublicId =
                 uploadResult.public_id;
         }
+
+        // =========================
+        // CREATE PROJECT
+        // =========================
 
         const project = await Project.create({
             userId: id,
@@ -235,7 +279,8 @@ export const createProject = async (req, res) => {
 
         return res.status(201).json({
             success: true,
-            message: "Project created successfully",
+            message:
+                "Project created successfully",
             project,
         });
     } catch (error) {
@@ -248,7 +293,6 @@ export const createProject = async (req, res) => {
         });
     }
 };
-
 export const editProject = async (req, res) => {
     try {
         const { id } = req.user;
