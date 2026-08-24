@@ -6,7 +6,10 @@ import {
     Trash2,
     Upload,
     X,
+    LoaderCircle,
 } from "lucide-react";
+
+import { createProject } from "../services/projectService.js";
 
 const CreateProject = () => {
     const navigate = useNavigate();
@@ -194,7 +197,10 @@ const CreateProject = () => {
             });
         }
 
-        if (mediaType === "video" && video) {
+        if (
+            mediaType === "video" &&
+            video
+        ) {
             formData.append(
                 "video",
                 video
@@ -204,39 +210,42 @@ const CreateProject = () => {
         try {
             setLoading(true);
 
-            const token =
-                localStorage.getItem("token");
+            const response =
+                await createProject(formData);
 
-            const response = await fetch(
-                "http://localhost:5000/api/projects",
-                {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: formData,
-                }
-            );
-
-            const data =
-                await response.json();
-
-            if (!response.ok) {
-                throw new Error(
-                    data.message ||
-                        "Failed to create project"
+            if (response.success) {
+                setSuccess(
+                    "Project created successfully"
                 );
+
+                setTitle("");
+                setDescription("");
+                setTechStackInput("");
+                setTechStack([]);
+
+                setLinks([
+                    {
+                        title: "",
+                        url: "",
+                    },
+                ]);
+
+                setMediaType("images");
+                setImages([]);
+                setVideo(null);
+
+                setTimeout(() => {
+                    navigate("/projects");
+                }, 800);
             }
-
-            setSuccess(
-                "Project created successfully"
-            );
-
-            setTimeout(() => {
-                navigate("/projects");
-            }, 800);
         } catch (error) {
-            setError(error.message);
+            console.error(error);
+
+            setError(
+                error?.response?.data?.message ||
+                    error?.message ||
+                    "Failed to create project."
+            );
         } finally {
             setLoading(false);
         }
@@ -278,6 +287,8 @@ const CreateProject = () => {
                     className="space-y-6"
                 >
 
+                    {/* Project Title */}
+
                     <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
 
                         <label className="text-sm font-semibold text-slate-800">
@@ -298,6 +309,8 @@ const CreateProject = () => {
 
                     </div>
 
+                    {/* Project Description */}
+
                     <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
 
                         <label className="text-sm font-semibold text-slate-800">
@@ -317,6 +330,8 @@ const CreateProject = () => {
                         />
 
                     </div>
+
+                    {/* Tech Stack */}
 
                     <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
 
@@ -396,6 +411,8 @@ const CreateProject = () => {
                         )}
 
                     </div>
+
+                    {/* Project Links */}
 
                     <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
 
@@ -510,6 +527,8 @@ const CreateProject = () => {
                         </div>
 
                     </div>
+
+                    {/* Project Media */}
 
                     <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
 
@@ -695,17 +714,23 @@ const CreateProject = () => {
 
                     </div>
 
+                    {/* Error */}
+
                     {error && (
                         <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
                             {error}
                         </div>
                     )}
 
+                    {/* Success */}
+
                     {success && (
                         <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-600">
                             {success}
                         </div>
                     )}
+
+                    {/* Actions */}
 
                     <div className="flex justify-end gap-3">
 
@@ -722,11 +747,19 @@ const CreateProject = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="rounded-xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+                            className="flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
                         >
-                            {loading
-                                ? "Creating..."
-                                : "Create Project"}
+                            {loading ? (
+                                <>
+                                    <LoaderCircle
+                                        size={17}
+                                        className="animate-spin"
+                                    />
+                                    Creating...
+                                </>
+                            ) : (
+                                "Create Project"
+                            )}
                         </button>
 
                     </div>
