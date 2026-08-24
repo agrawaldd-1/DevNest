@@ -171,8 +171,8 @@ const ViewShort = () => {
         try {
             if (navigator.share) {
                 await navigator.share({
-                    title: short?.caption || "SkillSync Short",
-                    text: "Check this Short on SkillSync",
+                    title: short?.caption || "DevNest Short",
+                    text: "Check this Short on DevNest",
                     url: shareUrl,
                 });
             } else {
