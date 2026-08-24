@@ -251,7 +251,7 @@ const FetchProfile = () => {
                                     posts.length === 0 ? (
                                         <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-5 py-12 text-center">
                                             <h3 className="text-sm font-semibold text-slate-800">Your posts will appear here</h3>
-                                            <p className="mx-auto mt-1 max-w-sm text-xs leading-5 text-slate-500">Start sharing your projects, knowledge and ideas with the SkillSync community.</p>
+                                            <p className="mx-auto mt-1 max-w-sm text-xs leading-5 text-slate-500">Start sharing your projects, knowledge and ideas with the DevNest community.</p>
                                         </div>
                                     ) : (
                                         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
