@@ -117,7 +117,7 @@ const Search = () => {
                             </h1>
 
                             <p className="mt-3 text-base text-slate-500 sm:text-lg">
-                                Find developers, explore projects and discover skills across SkillSync.
+                                Find developers, explore projects and discover skills across DevNest.
                             </p>
                         </div>
 
@@ -312,7 +312,7 @@ const Search = () => {
                                                                 </h3>
 
                                                                 <p className="mt-1 text-sm text-slate-400">
-                                                                    Developer on SkillSync
+                                                                    Developer on DevNest
                                                                 </p>
                                                             </div>
                                                         </div>
