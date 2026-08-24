@@ -57,7 +57,7 @@ const Login = () => {
                     </h1>
 
                     <p className="mt-2 text-sm text-slate-400">
-                        Sign in to continue to SkillSync
+                        Sign in to continue to DevNest
                     </p>
                 </div>
 
