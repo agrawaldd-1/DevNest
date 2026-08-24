@@ -14,15 +14,17 @@ const FetchProfile = () => {
     const [profile, setProfile] = useState(null);
     const [posts, setPosts] = useState([]);
     const [projects, setProjects] = useState([]);
-    const [shorts, setShorts] = useState([]);
+
     const [totalPosts, setTotalPosts] = useState(0);
     const [totalProjects, setTotalProjects] = useState(0);
-    const [totalShorts, setTotalShorts] = useState(0);
     const [totalConnections, setTotalConnections] = useState(0);
+
     const [activeTab, setActiveTab] = useState("posts");
+
     const [showNetwork, setShowNetwork] = useState(false);
     const [connections, setConnections] = useState([]);
     const [networkSearch, setNetworkSearch] = useState("");
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -49,10 +51,8 @@ const FetchProfile = () => {
                 setProfile(data.user);
                 setPosts(data.posts || []);
                 setProjects(data.projects || []);
-                setShorts(data.shorts || []);
                 setTotalPosts(data.totalPosts || 0);
                 setTotalProjects(data.totalProjects || 0);
-                setTotalShorts(data.totalShorts || 0);
                 setTotalConnections(data.totalConnections || 0);
                 setConnections(data.connections || []);
             } catch (error) {
@@ -80,7 +80,6 @@ const FetchProfile = () => {
 
     const handlePostClick = (postId) => navigate(`/posts/${postId}`);
     const handleProjectClick = (projectId) => navigate(`/projects/${projectId}`);
-    const handleShortClick = (shortId) => navigate(`/shorts/${shortId}`);
 
     const getConnectionUser = (connection) => {
         const profileId = profile?._id?.toString();
@@ -110,6 +109,7 @@ const FetchProfile = () => {
             <div className="min-h-screen bg-[#f5f7fb] text-slate-900">
                 <div className="flex min-h-screen">
                     <Sidebar user={null} navigate={navigate} handleLogout={handleLogout} />
+
                     <main className="w-full lg:ml-[245px]">
                         <div className="flex min-h-[calc(100vh-72px)] items-center justify-center px-5 pb-24 lg:pb-10">
                             <div className="text-center">
@@ -118,6 +118,7 @@ const FetchProfile = () => {
                             </div>
                         </div>
                     </main>
+
                     <MobileNav navigate={navigate} />
                 </div>
             </div>
@@ -129,15 +130,23 @@ const FetchProfile = () => {
             <div className="min-h-screen bg-[#f5f7fb] text-slate-900">
                 <div className="flex min-h-screen">
                     <Sidebar user={null} navigate={navigate} handleLogout={handleLogout} />
+
                     <main className="w-full lg:ml-[245px]">
                         <div className="flex min-h-[calc(100vh-72px)] items-center justify-center px-5 pb-24 lg:pb-10">
                             <div className="w-full max-w-md rounded-2xl border border-red-100 bg-white p-8 text-center shadow-sm">
-                                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-red-500">!</div>
-                                <h2 className="mt-4 text-lg font-semibold text-slate-900">Unable to load profile</h2>
+                                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-red-500">
+                                    !
+                                </div>
+
+                                <h2 className="mt-4 text-lg font-semibold text-slate-900">
+                                    Unable to load profile
+                                </h2>
+
                                 <p className="mt-2 text-sm text-slate-500">{error}</p>
                             </div>
                         </div>
                     </main>
+
                     <MobileNav navigate={navigate} />
                 </div>
             </div>
@@ -181,7 +190,9 @@ const FetchProfile = () => {
                                 </div>
 
                                 <div className="mt-5">
-                                    <p className="max-w-3xl whitespace-pre-line text-center text-sm leading-6 text-slate-600 sm:text-left">{profile.bio || "No Bio."}</p>
+                                    <p className="max-w-3xl whitespace-pre-line text-center text-sm leading-6 text-slate-600 sm:text-left">
+                                        {profile.bio || "No Bio."}
+                                    </p>
                                 </div>
 
                                 <div className="mt-6 border-t border-slate-100 pt-5">
@@ -206,7 +217,7 @@ const FetchProfile = () => {
                                     )}
                                 </div>
 
-                                <div className="mt-6 grid grid-cols-4 border-t border-slate-100 pt-5">
+                                <div className="mt-6 grid grid-cols-3 border-t border-slate-100 pt-5">
                                     <div className="text-center">
                                         <p className="text-lg font-bold text-slate-900">{totalPosts}</p>
                                         <p className="mt-0.5 text-xs text-slate-500">Posts</p>
@@ -215,11 +226,6 @@ const FetchProfile = () => {
                                     <div className="border-l border-slate-100 text-center">
                                         <p className="text-lg font-bold text-slate-900">{totalProjects}</p>
                                         <p className="mt-0.5 text-xs text-slate-500">Projects</p>
-                                    </div>
-
-                                    <div className="border-l border-slate-100 text-center">
-                                        <p className="text-lg font-bold text-slate-900">{totalShorts}</p>
-                                        <p className="mt-0.5 text-xs text-slate-500">Shorts</p>
                                     </div>
 
                                     <button type="button" onClick={() => setShowNetwork(true)} className={`border-l border-slate-100 text-center transition hover:bg-slate-50 ${showNetwork ? "bg-violet-50" : ""}`}>
@@ -231,8 +237,8 @@ const FetchProfile = () => {
                         </section>
 
                         <div className="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                            <div className="grid grid-cols-3 border-b border-slate-100">
-                                {["posts", "projects", "shorts"].map((tab) => (
+                            <div className="grid grid-cols-2 border-b border-slate-100">
+                                {["posts", "projects"].map((tab) => (
                                     <button key={tab} type="button" onClick={() => setActiveTab(tab)} className={`relative px-3 py-4 text-xs font-semibold transition sm:text-sm ${activeTab === tab ? "text-violet-600" : "text-slate-500 hover:text-slate-800"}`}>
                                         {tab.charAt(0).toUpperCase() + tab.slice(1)}
                                         {activeTab === tab && <span className="absolute bottom-0 left-1/2 h-0.5 w-12 -translate-x-1/2 rounded-full bg-violet-600" />}
@@ -274,9 +280,13 @@ const FetchProfile = () => {
                                             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-white text-slate-400 shadow-sm">
                                                 <Plus size={22} />
                                             </div>
+
                                             <h3 className="mt-4 text-sm font-semibold text-slate-800">No projects yet</h3>
                                             <p className="mx-auto mt-1 max-w-sm text-xs leading-5 text-slate-500">Showcase your projects and let other developers discover your work.</p>
-                                            <button type="button" onClick={() => navigate("/projects/create")} className="mt-5 rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-slate-800">Create Project</button>
+
+                                            <button type="button" onClick={() => navigate("/projects/create")} className="mt-5 rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-slate-800">
+                                                Create Project
+                                            </button>
                                         </div>
                                     ) : (
                                         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -294,42 +304,6 @@ const FetchProfile = () => {
 
                                                     <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition duration-200 group-hover:bg-black/30">
                                                         <span className="scale-90 rounded-lg bg-black/70 px-4 py-2 text-xs font-semibold text-white opacity-0 transition duration-200 group-hover:scale-100 group-hover:opacity-100">View Project</span>
-                                                    </div>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    )
-                                )}
-
-                                {activeTab === "shorts" && (
-                                    shorts.length === 0 ? (
-                                        <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-5 py-12 text-center">
-                                            <h3 className="text-sm font-semibold text-slate-800">No Shorts yet</h3>
-                                            <p className="mx-auto mt-1 max-w-sm text-xs leading-5 text-slate-500">Share short-form developer content with the SkillSync community.</p>
-                                            <button type="button" onClick={() => navigate("/shorts/create")} className="mt-5 rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-slate-800">Create Short</button>
-                                        </div>
-                                    ) : (
-                                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                                            {shorts.map((short) => (
-                                                <button key={short._id} type="button" onClick={() => handleShortClick(short._id)} className="group relative aspect-[9/16] overflow-hidden rounded-lg bg-black">
-                                                    {short.video ? (
-                                                        <video src={short.video} muted playsInline preload="metadata" className="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
-                                                    ) : (
-                                                        <div className="flex h-full w-full items-center justify-center bg-slate-200 p-4">
-                                                            <p className="text-xs font-medium text-slate-600">Short</p>
-                                                        </div>
-                                                    )}
-
-                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-
-                                                    {short.caption && (
-                                                        <div className="absolute bottom-0 left-0 right-0 p-3 text-left">
-                                                            <p className="line-clamp-2 text-xs font-medium text-white">{short.caption}</p>
-                                                        </div>
-                                                    )}
-
-                                                    <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition duration-200 group-hover:bg-black/20">
-                                                        <span className="scale-90 rounded-lg bg-black/70 px-3 py-1.5 text-xs font-semibold text-white opacity-0 transition duration-200 group-hover:scale-100 group-hover:opacity-100">View Short</span>
                                                     </div>
                                                 </button>
                                             ))}
@@ -381,6 +355,7 @@ const FetchProfile = () => {
                                         <div key={connection._id} className="flex items-center justify-between border-b border-slate-100 py-3 last:border-b-0">
                                             <button type="button" onClick={() => { closeNetwork(); navigate(`/profile/${user._id}`); }} className="flex min-w-0 items-center gap-3 text-left">
                                                 <Avatar username={user.username} image={user.image} />
+
                                                 <div className="min-w-0">
                                                     <p className="truncate text-sm font-semibold text-slate-900">{user.username}</p>
                                                     <p className="truncate text-xs text-slate-500">Connected</p>
