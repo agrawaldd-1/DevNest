@@ -205,9 +205,9 @@ const ViewPost = () => {
                 await navigator.share({
                     title:
                         post?.caption ||
-                        "SkillSync Post",
+                        "DevNest Post",
                     text:
-                        "Check this post on SkillSync",
+                        "Check this post on DevNest",
                     url: shareUrl,
                 });
             } else {
