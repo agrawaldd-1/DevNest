@@ -2,7 +2,7 @@ import api from "./api.js";
 
 export const createProject = async (formData) => {
     const response = await api.post(
-        "/projects",
+        "/projects/create",
         formData
     );
 
