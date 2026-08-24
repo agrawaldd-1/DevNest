@@ -50,7 +50,7 @@ const Register = () => {
                     </h1>
 
                     <p className="mt-2 text-sm text-slate-400">
-                        Join SkillSync and start building your network
+                        Join DevNest and start building your network
                     </p>
                 </div>
 
