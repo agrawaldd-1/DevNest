@@ -307,9 +307,9 @@ const ProjectCard = ({ project }) => {
                 await navigator.share({
                     title:
                         project?.title ||
-                        "SkillSync Project",
+                        "DevNest Project",
                     text:
-                        "Check this project on SkillSync",
+                        "Check this project on DevNest",
                     url: shareUrl,
                 });
             } else {
