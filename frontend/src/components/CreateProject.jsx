@@ -275,7 +275,7 @@ const CreateProject = () => {
 
                         <p className="mt-1 text-sm text-slate-500">
                             Showcase your project and
-                            share it with the SkillSync
+                            share it with the DevNest
                             community.
                         </p>
                     </div>
