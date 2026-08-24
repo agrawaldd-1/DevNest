@@ -34,11 +34,11 @@ const Sidebar = ({ user, handleLogout }) => {
             path: "/projects",
             icon: FolderKanban,
         },
-        {
-            name: "Shorts",
-            path: "/shorts",
-            icon: Clapperboard,
-        },
+        // {
+        //     name: "Shorts",
+        //     path: "/shorts",
+        //     icon: Clapperboard,
+        // },
         {
             name: "Chat",
             path: "/messages",
