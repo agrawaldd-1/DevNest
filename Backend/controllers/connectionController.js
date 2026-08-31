@@ -1,6 +1,6 @@
 import { User } from "../models/user.js";
 import { Connection } from "../models/connections.js";
-import { Notification } from "../models/Notification.js";
+import { Notification } from "../models/notification.js";
 import { createNotification } from "./notificationController.js";
 
 export const sendConnectionRequest = async (req, res) => {
