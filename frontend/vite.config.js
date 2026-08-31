@@ -8,6 +8,10 @@ export default defineConfig({
     tailwindcss(),
   ],
 
+  css: {
+    transformer: "postcss",
+  },
+
   build: {
     cssMinify: "esbuild",
   },
