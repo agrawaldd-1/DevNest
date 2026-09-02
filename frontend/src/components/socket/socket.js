@@ -14,7 +14,7 @@ export const connectSocket = () => {
     }
 
     socket = io(
-        "http://localhost:5000",
+        import.meta.env.VITE_API_URL || "https://devnest-1-b73r.onrender.com",
         {
             auth: {
                 token,

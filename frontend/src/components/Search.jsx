@@ -37,8 +37,9 @@ const Search = () => {
 
             const token = localStorage.getItem("token");
 
+            const BASE_URL = import.meta.env.VITE_API_URL || "https://devnest-1-b73r.onrender.com";
             const response = await fetch(
-                `http://localhost:5000/api/search?query=${encodeURIComponent(searchQuery)}`,
+                `${BASE_URL}/api/search?query=${encodeURIComponent(searchQuery)}`,
                 {
                     method: "GET",
                     headers: {
